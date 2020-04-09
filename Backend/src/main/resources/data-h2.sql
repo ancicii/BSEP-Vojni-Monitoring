@@ -12,6 +12,10 @@ DELETE FROM user;
 --
 DELETE FROM authority;
 --
+-- Delete data from the table 'issuer'
+--
+CREATE TABLE IF NOT EXISTS issuer (id INT, alias VARCHAR(50), issuer_name VARCHAR(50));
+--
 -- Inserting data into table authority
 --
 INSERT INTO authority(id, type) VALUES
@@ -34,3 +38,8 @@ INSERT INTO user_authority(user_id, authority_id) VALUES
 (3, 1),
 (4, 1),
 (5, 1);
+--
+-- Inserting data into table issuer
+--
+INSERT INTO issuer VALUES
+(1, 'selfsigned', 'Self-Signed');
