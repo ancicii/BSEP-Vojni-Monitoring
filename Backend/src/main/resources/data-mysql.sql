@@ -42,7 +42,7 @@ INSERT INTO user_authority(user_id, authority_id) VALUES
 
 
 INSERT INTO certificate(id, alias, end_date, is_active, issuer_name, issueralias, serial_number, start_date, type) VALUES
-(1, 'selfsigned', '02.02.2022', true, 'issuer issuer','selfsigned', 'AA123', '01.01.2020', 'ROOT'),
+(1, 'selfsigned', '2022-02-02 16:52:30', true, 'issuer issuer','selfsigned', 'AA123', '2020-01-01 16:52:30', 'ROOT'),
 (2, 'aliass2', '02.02.2022', true, 'issuer issuer','selfsigned', 'AA123', '01.01.2020', 'ROOT'),
 (3, 'aliass3', '02.02.2022', true, 'issuer issuer','selfsigned', 'AA123', '01.01.2020', 'ROOT'),
 (4, 'aliass4', '02.02.2022', true, 'issuer issuer','aliass2', 'AA123', '01.01.2020', 'ROOT'),
