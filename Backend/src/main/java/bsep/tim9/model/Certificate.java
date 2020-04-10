@@ -73,14 +73,6 @@ public class Certificate {
         this.issuer_name = issuer_name;
     }
 
-    public String getIssueralias() {
-        return issueralias;
-    }
-
-    public void setIssueralias(String issueralias) {
-        this.issueralias = issueralias;
-    }
-
     public String getSerial_number() {
         return serial_number;
     }
