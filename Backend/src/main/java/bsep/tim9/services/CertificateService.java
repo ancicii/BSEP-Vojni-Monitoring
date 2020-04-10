@@ -71,6 +71,9 @@ public class CertificateService {
         SubjectData subjectData = new SubjectData(subjectPublicKey, subjectName, subjectSerialNumber, startDate, endDate);
         IssuerData issuerData = keyStoreReader.readIssuerFromStore(keystorePath, issuerAlias, keystorePass.toCharArray(), keystorePass.toCharArray());
 
+        CertificateGenerator cg = new CertificateGenerator();
+        X509Certificate cert = cg.generateCertificate(subjectData, issuerData, false);
+
         LocalDateTime startLocalDateTime = Instant.ofEpochMilli( startDate.getTime() )
                 .atZone( ZoneId.systemDefault() )
                 .toLocalDateTime();
@@ -89,15 +92,12 @@ public class CertificateService {
                 true,
                 CertificateType.ENDUSER);
 
-        if (validateCertificate(newCertificate)) {
+        if (validateCertificate(newCertificate, cert)) {
             certificateRepository.saveAndFlush(newCertificate);
         }
         else {
             throw new InvalidCertificateException("Certificate invalid");
         }
-
-        CertificateGenerator cg = new CertificateGenerator();
-        X509Certificate cert = cg.generateCertificate(subjectData, issuerData, false);
 
         KeyStoreWriter keyStoreWriter = new KeyStoreWriter();
         keyStoreWriter.loadKeyStore(keystorePath, keystorePass.toCharArray());
@@ -137,6 +137,9 @@ public class CertificateService {
         SubjectData subjectData = new SubjectData(keyPairIssuer.getPublic(), subjectName, subjectSerialNumber, startDate, endDate);
         IssuerData issuerData = keyStoreReader.readIssuerFromStore(keystorePath, issuerAlias, keystorePass.toCharArray(), keystorePass.toCharArray());
 
+        CertificateGenerator cg = new CertificateGenerator();
+        X509Certificate cert = cg.generateCertificate(subjectData, issuerData, true);
+
         LocalDateTime startLocalDateTime = Instant.ofEpochMilli( startDate.getTime() )
                 .atZone( ZoneId.systemDefault() )
                 .toLocalDateTime();
@@ -154,15 +157,12 @@ public class CertificateService {
                 endLocalDateTime,
                 true,
                 CertificateType.INTERMEDIATE);
-        if (validateCertificate(newCertificate)) {
+        if (validateCertificate(newCertificate, cert)) {
             certificateRepository.saveAndFlush(newCertificate);
         }
         else {
             throw new InvalidCertificateException("Certificate invalid");
         }
-
-        CertificateGenerator cg = new CertificateGenerator();
-        X509Certificate cert = cg.generateCertificate(subjectData, issuerData, true);
 
         KeyStoreWriter keyStoreWriter = new KeyStoreWriter();
         keyStoreWriter.loadKeyStore(keystorePath, keystorePass.toCharArray());
@@ -193,7 +193,7 @@ public class CertificateService {
         return null;
     }
 
-    private boolean validateCertificate(Certificate certificate) {
+    private boolean validateCertificate(Certificate certificate, X509Certificate subjectCert) {
         // Check certificate date
         LocalDateTime currentDateTime = LocalDateTime.now();
         if (currentDateTime.isBefore(certificate.getStart_date()) || currentDateTime.isAfter(certificate.getEnd_date())) {
@@ -212,7 +212,7 @@ public class CertificateService {
 
         // Get Certificate objects
         KeyStoreReader keyStoreReader = new KeyStoreReader();
-        X509Certificate subjectCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass, certificate.getAlias());
+        if (subjectCert == null) subjectCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass, certificate.getAlias());
         X509Certificate issuerCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass, certificate.getIssueralias());
 
         // Check Signature
@@ -223,7 +223,7 @@ public class CertificateService {
         }
 
         Certificate issuerCertificate = certificateRepository.findByAlias(certificate.getIssueralias());
-        return validateCertificate(issuerCertificate);
+        return validateCertificate(issuerCertificate, null);
     }
 
     public List<Certificate> getAll() {
