@@ -60,6 +60,11 @@ public class CertificateController {
         return new ResponseEntity<>(certificateService.getAllByType(type.toUpperCase()), HttpStatus.OK);
     }
 
-
+    @GetMapping(value = "/delete/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> revokeCertificate(@PathVariable("id") String alias){
+        certificateService.revoke(alias);
+        return new ResponseEntity<>(certificateService.getOne(alias), HttpStatus.OK);
+    }
 
 }
