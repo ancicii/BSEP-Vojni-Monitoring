@@ -31,7 +31,7 @@ export class EndUserCertificateComponent implements OnInit {
   constructor(private certificateService: CertificateApiService, private router: Router) { }
 
   ngOnInit() {
-    this.getIssuers();
+    this.getCertificates();
   }
 
   onSubmit() {
@@ -57,8 +57,8 @@ export class EndUserCertificateComponent implements OnInit {
     this.certificateService.createEndUserCertificate(eucModel).subscribe(createEUCObserver);
   }
 
-  private getIssuers() {
-    this.certificateService.getIssuers().subscribe({
+  private getCertificates() {
+    this.certificateService.getCertificates().subscribe({
       next: (result: IssuerModel[]) => {
         this.issuers = result;
     },

@@ -31,7 +31,7 @@ export class IntermediateCertificateComponent implements OnInit {
   constructor(private certificateService: CertificateApiService, private router: Router) { }
 
   ngOnInit() {
-    this.getIssuers();
+    this.getCertificates();
   }
 
   onSubmit() {
@@ -56,8 +56,8 @@ export class IntermediateCertificateComponent implements OnInit {
     this.certificateService.createIntermediateCertificate(icModel).subscribe(createICObserver);
   }
 
-  private getIssuers() {
-    this.certificateService.getIssuers().subscribe({
+  private getCertificates() {
+    this.certificateService.getCertificates().subscribe({
       next: (result: IssuerModel[]) => {
         this.issuers = result;
       },

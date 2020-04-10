@@ -49,10 +49,18 @@ public class CertificateController {
         }
     }
 
-    @GetMapping(value="/aliases")
+    @GetMapping(value="/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<?> getIssuers() {
-        return new ResponseEntity<>(certificateService.getIssuers(), HttpStatus.OK);
+    public ResponseEntity<?> getAllCertificates() {
+        return new ResponseEntity<>(certificateService.getAll(), HttpStatus.OK);
     }
+
+    @GetMapping(value="/all/{type}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> getAllCertificatesByType(@PathVariable("type") String type) {
+        return new ResponseEntity<>(certificateService.getAllByType(type.toUpperCase()), HttpStatus.OK);
+    }
+
+
 
 }

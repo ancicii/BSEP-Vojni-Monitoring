@@ -14,7 +14,7 @@ DELETE FROM authority;
 --
 -- Delete data from the table 'issuer'
 --
-DELETE FROM issuer;
+DELETE FROM certificate;
 --
 -- Inserting data into table authority
 --
@@ -38,8 +38,6 @@ INSERT INTO user_authority(user_id, authority_id) VALUES
 (3, 1),
 (4, 1),
 (5, 1);
---
--- Inserting data into table issuer
---
-INSERT INTO issuer VALUES
-(1, 'selfsigned', 'Self-Signed');
+
+INSERT INTO certificate(id, alias, end_date, is_active, issuer_name, issuer_alias, serial_number, start_date, type) VALUES
+(1, 'aliass', '02.02.2022', true, 'issuer issuer','issuer_aliasss', 'AA123', '01.01.2020', 'ROOT')
