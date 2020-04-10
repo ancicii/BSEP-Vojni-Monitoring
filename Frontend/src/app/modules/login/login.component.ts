@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       next: x =>{
         localStorage.setItem('token', x);
         console.log("Welcome!");
-        this.router.navigate(['/dashboard/events/preview']);
+        this.router.navigate(['/dashboard/euc/preview']);
       },
       error: (err: any) => {
         console.log(err);

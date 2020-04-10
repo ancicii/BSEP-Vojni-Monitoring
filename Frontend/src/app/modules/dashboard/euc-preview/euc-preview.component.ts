@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CertificateApiService} from "../../../core/certificate-api.service";
 import {DataSource} from "@angular/cdk/collections";
 import {Observable} from "rxjs";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-euc-preview',
@@ -10,7 +11,9 @@ import {Observable} from "rxjs";
 })
 export class EucPreviewComponent implements OnInit {
   dataSource = new EucDataSource(this._certificateApiService)
-  displayedColumns = ['subjectPublicKey', 'subjectName', 'issuerAlias', 'subjectAlias'];
+  displayedColumns = ['serialNumber', 'alias', 'issuerAlias', 'issuerName', 'startDate', 'endDate', 'isActive'];
+  pipe = new DatePipe('en-US');
+
   constructor(private _certificateApiService: CertificateApiService) {
   }
   ngOnInit() {
