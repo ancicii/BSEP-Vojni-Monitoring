@@ -230,7 +230,7 @@ public class CertificateService {
         return certificateRepository.findAll();
     }
 
-    public List<Certificate> getAllByType(String type){
+    public List<Certificate> getAllByType(CertificateType type){
         return certificateRepository.findAllByType(type);
     }
 

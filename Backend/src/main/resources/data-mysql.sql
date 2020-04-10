@@ -41,13 +41,15 @@ INSERT INTO user_authority(user_id, authority_id) VALUES
 
 
 
+
 INSERT INTO certificate(id, alias, end_date, is_active, issuer_name, issueralias, serial_number, start_date, type) VALUES
 (1, 'selfsigned', '2022-02-02 16:52:30', true, 'issuer issuer','selfsigned', 'AA123', '2020-01-01 16:52:30', 'ROOT'),
-(2, 'aliass2', '02.02.2022', true, 'issuer issuer','selfsigned', 'AA123', '01.01.2020', 'ROOT'),
-(3, 'aliass3', '02.02.2022', true, 'issuer issuer','selfsigned', 'AA123', '01.01.2020', 'ROOT'),
-(4, 'aliass4', '02.02.2022', true, 'issuer issuer','aliass2', 'AA123', '01.01.2020', 'ROOT'),
-(5, 'aliass5', '02.02.2022', true, 'issuer issuer','aliass2', 'AA123', '01.01.2020', 'ROOT'),
-(6, 'aliass6', '02.02.2022', true, 'issuer issuer','aliass5', 'AA123', '01.01.2020', 'ROOT'),
-(7, 'aliass7', '02.02.2022', true, 'issuer issuer','aliass3', 'AA123', '01.01.2020', 'ROOT'),
-(8, 'aliass8', '02.02.2022', true, 'issuer issuer','aliass3', 'AA123', '01.01.2020', 'ROOT')
+(2, 'alias2', '02.05.2022', true, 'issuer issuer','issuer_aliass2', 'AA124', '01.01.2020', 'ENDUSER'),
+(3, 'alias3', '22.02.2022', true, 'issuer issuer','issuer_aliass3', 'AA127', '01.01.2020', 'ENDUSER'),
+(4, 'alias6', '22.02.2022', true, 'issuer issuer','issuer_aliass6', 'AA556', '01.01.2020', 'ENDUSER'),
+(5, 'alias7', '22.02.2022', true, 'issuer issuer','issuer_aliass7', 'AA176', '01.01.2020', 'ENDUSER'),
+(6, 'alias4', '12.02.2022', true, 'issuer issuer','issuer_aliass4', 'AA348', '01.01.2020', 'INTERMEDIATE'),
+(7, 'alias5', '04.04.2021', true, 'issuer issuer','issuer_aliass5', 'AA885', '01.01.2020', 'INTERMEDIATE'),
+(8, 'alias8', '04.04.2021', true, 'issuer issuer','issuer_aliass8', 'AA965', '01.01.2020', 'INTERMEDIATE'),
+(9, 'alias9', '04.04.2021', true, 'issuer issuer','issuer_aliass9', 'AA163', '01.01.2020', 'INTERMEDIATE');
 

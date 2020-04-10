@@ -58,7 +58,7 @@ export class EndUserCertificateComponent implements OnInit {
   }
 
   private getCertificates() {
-    this.certificateService.getCertificates().subscribe({
+    this.certificateService.getAllCertificates().subscribe({
       next: (result: IssuerModel[]) => {
         this.issuers = result;
     },

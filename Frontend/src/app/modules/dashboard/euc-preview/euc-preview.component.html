@@ -1,28 +1,46 @@
 <div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource" matSort>
+  <table mat-table [dataSource]="dataSource">
 
-    <!-- Subject Public Key Column -->
-    <ng-container matColumnDef="subjectPublicKey">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject Public Key </th>
-      <td mat-cell *matCellDef="let row"> {{row.subjectPublicKey}} </td>
+    <!-- Serial Number Column -->
+    <ng-container matColumnDef="serialNumber">
+      <th mat-header-cell *matHeaderCellDef mat-header> Serial Number </th>
+      <td mat-cell *matCellDef="let row"> {{row.serial_number}} </td>
     </ng-container>
 
-    <!-- Subject Name Column -->
-    <ng-container matColumnDef="subjectName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject Name </th>
-      <td mat-cell *matCellDef="let row"> {{row.subjectName}} </td>
+    <!-- Alias Column -->
+    <ng-container matColumnDef="alias">
+      <th mat-header-cell *matHeaderCellDef mat-header> Alias </th>
+      <td mat-cell *matCellDef="let row"> {{row.alias}} </td>
     </ng-container>
 
     <!-- Issuer Alias Column -->
     <ng-container matColumnDef="issuerAlias">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Alias </th>
-      <td mat-cell *matCellDef="let row"> {{row.issuerAlias}} </td>
+      <th mat-header-cell *matHeaderCellDef mat-header> Issuer Alias </th>
+      <td mat-cell *matCellDef="let row"> {{row.issuer_alias}} </td>
     </ng-container>
 
-    <!-- Subject Alias Column -->
-    <ng-container matColumnDef="subjectAlias">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Subject Alias </th>
-      <td mat-cell *matCellDef="let row"> {{row.subjectAlias}} </td>
+    <!-- Issuer Name Column -->
+    <ng-container matColumnDef="issuerName">
+      <th mat-header-cell *matHeaderCellDef mat-header> Issuer Name </th>
+      <td mat-cell *matCellDef="let row"> {{row.issuer_name}} </td>
+    </ng-container>
+
+    <!-- Start Date Column -->
+    <ng-container matColumnDef="startDate">
+      <th mat-header-cell *matHeaderCellDef mat-header> Start Date </th>
+      <td mat-cell *matCellDef="let row"> {{row.start_date}} </td>
+    </ng-container>
+
+    <!-- End Date Column -->
+    <ng-container matColumnDef="endDate">
+      <th mat-header-cell *matHeaderCellDef mat-header> End Date </th>
+      <td mat-cell *matCellDef="let row"> {{row.end_date}} </td>
+    </ng-container>
+
+    <!-- Is Active Column -->
+    <ng-container matColumnDef="isActive">
+      <th mat-header-cell *matHeaderCellDef mat-header> Is Active </th>
+      <td mat-cell *matCellDef="let row"> {{row.active}} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -30,5 +48,5 @@
     </tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+<!--  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>-->
 </div>
