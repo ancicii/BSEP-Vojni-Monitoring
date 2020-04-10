@@ -16,7 +16,7 @@
     <!-- Issuer Alias Column -->
     <ng-container matColumnDef="issuerAlias">
       <th mat-header-cell *matHeaderCellDef mat-header> Issuer Alias </th>
-      <td mat-cell *matCellDef="let row"> {{row.issuer_alias}} </td>
+      <td mat-cell *matCellDef="let row"> {{row.issueralias}} </td>
     </ng-container>
 
     <!-- Issuer Name Column -->
@@ -41,6 +41,16 @@
     <ng-container matColumnDef="isActive">
       <th mat-header-cell *matHeaderCellDef mat-header> Is Active </th>
       <td mat-cell *matCellDef="let row"> {{row.active}} </td>
+    </ng-container>
+
+    <!-- Revoke Column -->
+    <ng-container matColumnDef="revoke">
+      <th mat-header-cell *matHeaderCellDef mat-header style='width: 40px;'> Revoke </th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-icon-button style='color: #c2185b;' (click)="revoke(row.alias)">
+          <mat-icon class="mat-18">gavel</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

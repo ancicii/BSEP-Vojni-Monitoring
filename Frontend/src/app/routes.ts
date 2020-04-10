@@ -12,12 +12,12 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    redirectTo: 'dashboard/euc/preview',
+    redirectTo: 'dashboard/all/preview',
     pathMatch: 'full'
   },
   {
     path: '',
-    redirectTo: 'dashboard/euc/preview',
+    redirectTo: 'dashboard/all/preview',
     pathMatch: 'full'
   },
   {
