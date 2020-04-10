@@ -17,7 +17,7 @@ public class Certificate {
     private String issuer_name;
 
     @Column(nullable = false)
-    private String issuer_alias;
+    private String issueralias;
 
     @Column(nullable = false)
     private String serial_number;
@@ -35,9 +35,9 @@ public class Certificate {
     @Enumerated(EnumType.STRING)
     private CertificateType type;
 
-    public Certificate(String alias, String issuer_name, String issuer_alias, String serial_number, LocalDateTime start_date, LocalDateTime end_date, Boolean isActive, CertificateType type) {
+    public Certificate(String alias, String issuer_name, String issueralias, String serial_number, LocalDateTime start_date, LocalDateTime end_date, Boolean isActive, CertificateType type) {
         this.alias = alias;
-        this.issuer_alias = issuer_alias;
+        this.issueralias = issueralias;
         this.issuer_name = issuer_name;
         this.serial_number = serial_number;
         this.start_date = start_date;
@@ -71,6 +71,14 @@ public class Certificate {
 
     public void setIssuer_name(String issuer_name) {
         this.issuer_name = issuer_name;
+    }
+
+    public String getIssueralias() {
+        return issueralias;
+    }
+
+    public void setIssueralias(String issueralias) {
+        this.issueralias = issueralias;
     }
 
     public String getSerial_number() {

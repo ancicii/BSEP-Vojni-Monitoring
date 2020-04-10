@@ -9,4 +9,6 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     Certificate findByAlias(String alias);
     List<Certificate> findAllByType(String type);
     List<Certificate> findAll();
+    List<Certificate> findAllByIssueralias(String alias);
+
 }

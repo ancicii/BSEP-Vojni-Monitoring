@@ -39,5 +39,12 @@ INSERT INTO user_authority(user_id, authority_id) VALUES
 (4, 1),
 (5, 1);
 
-INSERT INTO certificate(id, alias, end_date, is_active, issuer_name, issuer_alias, serial_number, start_date, type) VALUES
-(1, 'aliass', '02.02.2022', true, 'issuer issuer','issuer_aliasss', 'AA123', '01.01.2020', 'ROOT')
+INSERT INTO certificate(id, alias, end_date, is_active, issuer_name, issueralias, serial_number, start_date, type) VALUES
+(1, 'aliass', '02.02.2022', true, 'issuer issuer','issuer_aliass', 'AA123', '01.01.2020', 'ROOT'),
+(2, 'aliass2', '02.02.2022', true, 'issuer issuer','issuer_aliass', 'AA123', '01.01.2020', 'ROOT'),
+(3, 'aliass3', '02.02.2022', true, 'issuer issuer','isuer_aliass', 'AA123', '01.01.2020', 'ROOT'),
+(4, 'aliass4', '02.02.2022', true, 'issuer issuer','aliass2', 'AA123', '01.01.2020', 'ROOT'),
+(5, 'aliass5', '02.02.2022', true, 'issuer issuer','aliass2', 'AA123', '01.01.2020', 'ROOT'),
+(6, 'aliass6', '02.02.2022', true, 'issuer issuer','aliass5', 'AA123', '01.01.2020', 'ROOT'),
+(7, 'aliass7', '02.02.2022', true, 'issuer issuer','aliass3', 'AA123', '01.01.2020', 'ROOT'),
+(8, 'aliass8', '02.02.2022', true, 'issuer issuer','aliass3', 'AA123', '01.01.2020', 'ROOT')
