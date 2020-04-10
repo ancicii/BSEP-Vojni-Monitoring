@@ -49,3 +49,4 @@ INSERT INTO certificate(id, alias, end_date, is_active, issuer_name, issuer_alia
 (7, 'alias5', '04.04.2021', true, 'issuer issuer','issuer_aliass5', 'AA885', '01.01.2020', 'INTERMEDIATE'),
 (8, 'alias8', '04.04.2021', true, 'issuer issuer','issuer_aliass8', 'AA965', '01.01.2020', 'INTERMEDIATE'),
 (9, 'alias9', '04.04.2021', true, 'issuer issuer','issuer_aliass9', 'AA163', '01.01.2020', 'INTERMEDIATE');
+
