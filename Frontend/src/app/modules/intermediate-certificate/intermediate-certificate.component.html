@@ -1,0 +1,96 @@
+<div class="page">
+  <app-toolbar class="header"></app-toolbar>
+  <mat-card>
+    <mat-card-title>Add new end user certificate</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="ngForm" (ngSubmit)="onSubmit()">
+        <div fxLayout="row">
+          <p>
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject Common Name" formControlName="_cn">
+              </label>
+            </mat-form-field>
+          </p>
+          <p style="margin-left: 20px">
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject User ID" formControlName="_uid">
+              </label>
+            </mat-form-field>
+          </p>
+        </div>
+        <div fxLayout="row">
+          <p>
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject Surname" formControlName="_surname">
+              </label>
+            </mat-form-field>
+          </p>
+          <p style="margin-left: 20px">
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject Given Name" formControlName="_givenname">
+              </label>
+            </mat-form-field>
+          </p>
+        </div>
+        <div fxLayout="row">
+          <p>
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject Organization" formControlName="_o">
+              </label>
+            </mat-form-field>
+          </p>
+          <p style="margin-left: 20px">
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject Organization Unit" formControlName="_ou">
+              </label>
+            </mat-form-field>
+          </p>
+        </div>
+        <div fxLayout="row">
+          <p>
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject Country Code" formControlName="_c">
+              </label>
+            </mat-form-field>
+          </p>
+          <p style="margin-left: 20px">
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject Email" formControlName="_e">
+              </label>
+            </mat-form-field>
+          </p>
+        </div>
+        <div fxLayout="row">
+          <p>
+            <mat-form-field>
+              <label>
+                <input type="text" matInput placeholder="Subject Alias" formControlName="subjectAlias">
+              </label>
+            </mat-form-field>
+          </p>
+          <p style="margin-left: 20px">
+            <mat-form-field>
+              <mat-label>Issuer Alias</mat-label>
+              <mat-select formControlName="issuerAlias">
+                <mat-option *ngFor="let issuer of issuers" [value]="issuer.alias">
+                  {{issuer.alias}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </p>
+        </div>
+        <div class="button">
+          <button type="submit" mat-button>Create</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

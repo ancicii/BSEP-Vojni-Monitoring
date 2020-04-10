@@ -1,0 +1,12 @@
+<mat-toolbar color="primary" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
+  <span>
+    <a mat-button routerLink="/eu/preview">MM</a>
+    <button *ngIf="getRole == 'ROLE_ADMIN'" routerLink="/dashboard/eu/preview" mat-button>End User Certificates</button>
+    <button *ngIf="getRole == 'ROLE_ADMIN'" routerLink="/dashboard/ic/preview" mat-button>Intermediate Certificates</button>
+    <button *ngIf="getRole == 'ROLE_ADMIN'" routerLink="/dashboard/all/preview" mat-button>All Certificates</button>
+  </span>
+  <span fxLayoutAlign="right">
+    <button *ngIf="getRole != 'NO_ROLE'" (click)="logOut()" mat-button>Logout</button>
+    <button *ngIf="getRole == 'NO_ROLE'" routerLink="/login" mat-button>Login</button>
+  </span>
+</mat-toolbar>
