@@ -3,6 +3,7 @@ import {CertificateApiService} from "../../../core/certificate-api.service";
 import {DataSource} from "@angular/cdk/collections";
 import {Observable} from "rxjs";
 import {DatePipe} from "@angular/common";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-euc-preview',
@@ -11,12 +12,21 @@ import {DatePipe} from "@angular/common";
 })
 export class EucPreviewComponent implements OnInit {
   dataSource = new EucDataSource(this._certificateApiService)
-  displayedColumns = ['serialNumber', 'alias', 'issuerAlias', 'issuerName', 'startDate', 'endDate', 'isActive'];
-  pipe = new DatePipe('en-US');
+  displayedColumns = ['serialNumber', 'alias', 'issuerAlias', 'issuerName',
+    'startDate', 'endDate', 'isActive', 'revoke'];
 
-  constructor(private _certificateApiService: CertificateApiService) {
+  constructor(private _certificateApiService: CertificateApiService,
+              private router: Router) {
   }
   ngOnInit() {
+  }
+
+  revoke(alias: any) {
+    this._certificateApiService.revokeCertificate(alias).subscribe({
+      next: () => {
+        window.location.reload();
+      }
+    })
   }
 }
 

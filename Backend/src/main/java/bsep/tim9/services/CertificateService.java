@@ -17,6 +17,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
@@ -138,11 +139,11 @@ public class CertificateService {
     }
 
     public List<Certificate> getAll() {
-        return certificateRepository.findAll();
+        return certificateRepository.findAllByIsActiveTrue();
     }
 
     public List<Certificate> getAllByType(CertificateType type){
-        return certificateRepository.findAllByType(type);
+        return certificateRepository.findAllByTypeAndIsActiveTrue(type);
     }
 
     public Object getOne(String alias) {

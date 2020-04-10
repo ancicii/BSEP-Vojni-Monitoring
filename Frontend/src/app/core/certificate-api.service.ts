@@ -23,6 +23,10 @@ export class CertificateApiService {
     return this._http.get(`certificate/all`);
   }
 
+  revokeCertificate(alias : String){
+      return this._http.get(`certificate/delete/${alias}`);
+  }
+
   createEndUserCertificate(eucModel: EndUserCertificateModel) {
     return this._http.post(`certificate/enduser`, {
       issuerAlias: eucModel.issuerAlias,

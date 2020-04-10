@@ -73,14 +73,6 @@ public class Certificate {
         this.issuer_name = issuer_name;
     }
 
-    public String getIssueralias() {
-        return issueralias;
-    }
-
-    public void setIssueralias(String issueralias) {
-        this.issueralias = issueralias;
-    }
-
     public String getSerial_number() {
         return serial_number;
     }
@@ -121,10 +113,10 @@ public class Certificate {
         this.type = type;
     }
 
-    public String getIssuer_alias() {
-        return issuer_alias;
+    public String getIssueralias() {
+        return issueralias;
     }
-    public void setIssuer_alias(String issuer_alias) {
-        this.issuer_alias = issuer_alias;
+    public void setIssueralias(String issuer_alias) {
+        this.issueralias = issuer_alias;
     }
 }
