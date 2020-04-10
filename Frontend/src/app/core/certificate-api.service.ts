@@ -12,15 +12,15 @@ export class CertificateApiService {
   }
 
   getEndUserCertificates(){
-    return this._http.get(`certificate/EndUser`);
+    return this._http.get(`certificate/all/enduser`);
   }
 
   getIntermediateCertificates(){
-    return this._http.get(`certificate/Intermediate`);
+    return this._http.get(`certificate/all/intermediate`);
   }
 
-  getRootCertificates(){
-    return this._http.get(`certificate/Root`);
+  getAllCertificates(){
+    return this._http.get(`certificate/all`);
   }
 
   createEndUserCertificate(eucModel: EndUserCertificateModel) {
@@ -39,10 +39,6 @@ export class CertificateApiService {
       },
       subjectPublicKey: eucModel.subjectPublicKey
     });
-  }
-
-  getCertificates(){
-    return this._http.get('certificate/all');
   }
 
   createIntermediateCertificate(icModel: IntermediateCertificateModel) {

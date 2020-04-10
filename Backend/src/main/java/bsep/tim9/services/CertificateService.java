@@ -4,6 +4,7 @@ import bsep.tim9.DTOs.EndUserCertificateDTO;
 import bsep.tim9.DTOs.IntermediateCertificateDTO;
 import bsep.tim9.exceptions.AliasAlreadyExistsException;
 import bsep.tim9.model.Certificate;
+import bsep.tim9.model.CertificateType;
 import bsep.tim9.model.IssuerData;
 import bsep.tim9.model.SubjectData;
 import bsep.tim9.repositories.CertificateRepository;
@@ -140,7 +141,7 @@ public class CertificateService {
         return certificateRepository.findAll();
     }
 
-    public List<Certificate> getAllByType(String type){
+    public List<Certificate> getAllByType(CertificateType type){
         return certificateRepository.findAllByType(type);
     }
 
