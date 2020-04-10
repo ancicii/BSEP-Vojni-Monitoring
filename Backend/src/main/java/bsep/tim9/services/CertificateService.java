@@ -18,12 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.security.*;
 import java.security.cert.X509Certificate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CertificateService {
@@ -36,6 +34,7 @@ public class CertificateService {
 
     @Value("${keystore_pass}")
     private String keystorePass;
+
 
     public String createEndUserCertificate(EndUserCertificateDTO endUserCertificateDTO) throws AliasAlreadyExistsException {
         Base64KeyDecoder base64KeyDecoder = new Base64KeyDecoder();
@@ -63,7 +62,7 @@ public class CertificateService {
         IssuerData issuerData = keyStoreReader.readIssuerFromStore(keystorePath, issuerAlias, keystorePass.toCharArray(), keystorePass.toCharArray());
 
         CertificateGenerator cg = new CertificateGenerator();
-        X509Certificate cert = cg.generateCertificate(subjectData, issuerData);
+        X509Certificate cert = cg.generateCertificate(subjectData, issuerData, false);
 
         KeyStoreWriter keyStoreWriter = new KeyStoreWriter();
         keyStoreWriter.loadKeyStore(keystorePath, keystorePass.toCharArray());
@@ -105,7 +104,7 @@ public class CertificateService {
         IssuerData issuerData = keyStoreReader.readIssuerFromStore(keystorePath, issuerAlias, keystorePass.toCharArray(), keystorePass.toCharArray());
 
         CertificateGenerator cg = new CertificateGenerator();
-        X509Certificate cert = cg.generateCertificate(subjectData, issuerData);
+        X509Certificate cert = cg.generateCertificate(subjectData, issuerData, true);
 
         KeyStoreWriter keyStoreWriter = new KeyStoreWriter();
         keyStoreWriter.loadKeyStore(keystorePath, keystorePass.toCharArray());
@@ -144,4 +143,19 @@ public class CertificateService {
     public List<Certificate> getAllByType(String type){
         return certificateRepository.findAllByType(type);
     }
+
+    public Object getOne(String alias) {
+        return certificateRepository.findByAlias(alias);
+    }
+
+    public void revoke(String alias) {
+        for (Certificate cert : certificateRepository.findAllByIssueralias(alias)) {
+            revoke(cert.getAlias());
+        }
+        Certificate certificate = certificateRepository.findByAlias(alias);
+        certificate.setActive(false);
+        certificateRepository.save(certificate);
+    }
+
+
 }
