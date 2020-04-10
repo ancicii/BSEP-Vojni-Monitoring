@@ -40,8 +40,6 @@ INSERT INTO user_authority(user_id, authority_id) VALUES
 (5, 1);
 
 
-
-
 INSERT INTO certificate(id, alias, end_date, is_active, issuer_name, issueralias, serial_number, start_date, type) VALUES
 (1, 'selfsigned', '2022-02-02 16:52:30', true, 'issuer issuer','selfsigned', 'AA123', '2020-01-01 16:52:30', 'ROOT'),
 (2, 'alias2', '02.05.2022', true, 'issuer issuer','issuer_aliass2', 'AA124', '01.01.2020', 'ENDUSER'),

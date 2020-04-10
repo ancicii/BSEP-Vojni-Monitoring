@@ -23,7 +23,7 @@ public class CertificateController {
     private CertificateService certificateService;
 
     @PostMapping(value = "/enduser")
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> createEndUserCertificate(@RequestBody EndUserCertificateDTO endUserCertificateDTO) {
         try {
             return new ResponseEntity<>(certificateService.createEndUserCertificate(endUserCertificateDTO), HttpStatus.OK);
@@ -33,7 +33,7 @@ public class CertificateController {
     }
 
     @PostMapping(value = "/intermediate")
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> createIntermediateCertificate(@RequestBody IntermediateCertificateDTO intermediateCertificateDTO) {
         try {
             return new ResponseEntity<>(certificateService.createIntermediateCertificate(intermediateCertificateDTO), HttpStatus.OK);
@@ -44,13 +44,13 @@ public class CertificateController {
     }
 
     @GetMapping(value="/all")
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> getAllCertificates() {
         return new ResponseEntity<>(certificateService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping(value="/all/{type}")
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> getAllCertificatesByType(@PathVariable("type") String type) {
         return new ResponseEntity<>(certificateService.getAllByType(CertificateType.valueOf(type.toUpperCase())), HttpStatus.OK);
     }
