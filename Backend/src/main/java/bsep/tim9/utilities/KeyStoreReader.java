@@ -1,9 +1,6 @@
 package bsep.tim9.utilities;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -24,15 +21,7 @@ public class KeyStoreReader {
 	// - Sertifikati koji ukljucuju javni kljuc
 	// - Privatni kljucevi
 	// - Tajni kljucevi, koji se koriste u simetricnima siframa
-	private KeyStore keyStore;
-	
-	public KeyStoreReader() {
-		try {
-			keyStore = KeyStore.getInstance("JKS", "SUN");
-		} catch (KeyStoreException | NoSuchProviderException e) {
-			e.printStackTrace();
-		}
-	}
+	public KeyStoreReader() { }
 	/**
 	 * Zadatak ove funkcije jeste da ucita podatke o izdavaocu i odgovarajuci privatni kljuc.
 	 * Ovi podaci se mogu iskoristiti da se novi sertifikati izdaju.
@@ -45,18 +34,20 @@ public class KeyStoreReader {
 	 */
 	public IssuerData readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keyPass) {
 		try {
+			//kreiramo instancu KeyStore
+			KeyStore ks = KeyStore.getInstance("JKS", "SUN");
 			//Datoteka se ucitava
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
-			keyStore.load(in, password);
+			ks.load(in, password);
 			//Iscitava se sertifikat koji ima dati alias
-			Certificate cert = keyStore.getCertificate(alias);
+			Certificate cert = ks.getCertificate(alias);
 			//Iscitava se privatni kljuc vezan za javni kljuc koji se nalazi na sertifikatu sa datim aliasom
-			PrivateKey privKey = (PrivateKey) keyStore.getKey(alias, keyPass);
+			PrivateKey privKey = (PrivateKey) ks.getKey(alias, keyPass);
 			in.close();
-
+			ks.store(new FileOutputStream(keyStoreFile), password);
 			X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
 			return new IssuerData(privKey, issuerName);
-		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | IOException e) {
+		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException | IOException | NoSuchProviderException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -71,13 +62,14 @@ public class KeyStoreReader {
 			KeyStore ks = KeyStore.getInstance("JKS", "SUN");
 			//ucitavamo podatke
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
-			ks.load(in, keyStorePass.toCharArray());
-			
-			if(ks.isKeyEntry(alias)) {
-				Certificate ret = ks.getCertificate(alias);
-				in.close();
-				return ret;
-			}
+			char[] temp = keyStorePass.toCharArray();
+			ks.load(in, temp);
+
+			Certificate ret = ks.getCertificate(alias);
+			in.close();
+			ks.store(new FileOutputStream(keyStoreFile), temp);
+			return ret;
+
 		} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			e.printStackTrace();
 		}
@@ -93,11 +85,13 @@ public class KeyStoreReader {
 			KeyStore ks = KeyStore.getInstance("JKS", "SUN");
 			//ucitavamo podatke
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
-			ks.load(in, keyStorePass.toCharArray());
+			char[] temp = keyStorePass.toCharArray();
+			ks.load(in, temp);
 			
 			if(ks.isKeyEntry(alias)) {
 				PrivateKey ret = (PrivateKey) ks.getKey(alias, pass.toCharArray());
 				in.close();
+				ks.store(new FileOutputStream(keyStoreFile), temp);
 				return ret;
 			}
 		} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException | IOException | UnrecoverableKeyException e) {
@@ -120,6 +114,7 @@ public class KeyStoreReader {
 
 			boolean ret = ks.containsAlias(alias);
 			in.close();
+			ks.store(new FileOutputStream(keyStoreFile), temp);
 			return ret;
 		} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			e.printStackTrace();

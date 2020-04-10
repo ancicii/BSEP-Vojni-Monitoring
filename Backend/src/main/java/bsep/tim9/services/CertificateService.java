@@ -137,6 +137,12 @@ public class CertificateService {
         return null;
     }
 
+    private boolean validateCertificate(Certificate certificate) {
+
+
+        return true;
+    }
+
     public List<Certificate> getAll() {
         return certificateRepository.findAll();
     }
