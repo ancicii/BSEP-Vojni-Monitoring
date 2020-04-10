@@ -12,7 +12,15 @@ export class CertificateApiService {
   }
 
   getEndUserCertificates(){
-    return this._http.get(`certificate/enduser`);
+    return this._http.get(`certificate/EndUser`);
+  }
+
+  getIntermediateCertificates(){
+    return this._http.get(`certificate/Intermediate`);
+  }
+
+  getRootCertificates(){
+    return this._http.get(`certificate/Root`);
   }
 
   createEndUserCertificate(eucModel: EndUserCertificateModel) {
@@ -33,8 +41,8 @@ export class CertificateApiService {
     });
   }
 
-  getIssuers(){
-    return this._http.get('certificate/aliases');
+  getCertificates(){
+    return this._http.get('certificate/all');
   }
 
   createIntermediateCertificate(icModel: IntermediateCertificateModel) {

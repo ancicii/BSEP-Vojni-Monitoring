@@ -3,10 +3,10 @@ package bsep.tim9.services;
 import bsep.tim9.DTOs.EndUserCertificateDTO;
 import bsep.tim9.DTOs.IntermediateCertificateDTO;
 import bsep.tim9.exceptions.AliasAlreadyExistsException;
-import bsep.tim9.model.Issuer;
+import bsep.tim9.model.Certificate;
 import bsep.tim9.model.IssuerData;
 import bsep.tim9.model.SubjectData;
-import bsep.tim9.repositories.IssuerRepository;
+import bsep.tim9.repositories.CertificateRepository;
 import bsep.tim9.utilities.Base64KeyDecoder;
 import bsep.tim9.utilities.CertificateGenerator;
 import bsep.tim9.utilities.KeyStoreReader;
@@ -15,8 +15,6 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -31,7 +29,7 @@ import java.util.UUID;
 public class CertificateService {
 
     @Autowired
-    IssuerRepository issuerRepository;
+    CertificateRepository certificateRepository;
 
     @Value("${keystore_path}")
     private String keystorePath;
@@ -139,7 +137,11 @@ public class CertificateService {
         return null;
     }
 
-    public List<Issuer> getIssuers() {
-        return issuerRepository.findAll();
+    public List<Certificate> getAll() {
+        return certificateRepository.findAll();
+    }
+
+    public List<Certificate> getAllByType(String type){
+        return certificateRepository.findAllByType(type);
     }
 }
