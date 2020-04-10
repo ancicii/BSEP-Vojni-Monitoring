@@ -3,6 +3,7 @@ package bsep.tim9.services;
 import bsep.tim9.DTOs.EndUserCertificateDTO;
 import bsep.tim9.DTOs.IntermediateCertificateDTO;
 import bsep.tim9.exceptions.AliasAlreadyExistsException;
+import bsep.tim9.exceptions.InvalidCertificateException;
 import bsep.tim9.model.Certificate;
 import bsep.tim9.model.CertificateType;
 import bsep.tim9.model.IssuerData;
@@ -12,7 +13,11 @@ import bsep.tim9.utilities.Base64KeyDecoder;
 import bsep.tim9.utilities.CertificateGenerator;
 import bsep.tim9.utilities.KeyStoreReader;
 import bsep.tim9.utilities.KeyStoreWriter;
+import org.bouncycastle.asn1.ASN1Object;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +27,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.security.*;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -38,7 +47,7 @@ public class CertificateService {
     private String keystorePass;
 
 
-    public String createEndUserCertificate(EndUserCertificateDTO endUserCertificateDTO) throws AliasAlreadyExistsException {
+    public String createEndUserCertificate(EndUserCertificateDTO endUserCertificateDTO) throws AliasAlreadyExistsException, InvalidCertificateException {
         Base64KeyDecoder base64KeyDecoder = new Base64KeyDecoder();
         PublicKey subjectPublicKey = base64KeyDecoder.decodePublicKey(endUserCertificateDTO.getSubjectPublicKey());
 
@@ -66,6 +75,31 @@ public class CertificateService {
         CertificateGenerator cg = new CertificateGenerator();
         X509Certificate cert = cg.generateCertificate(subjectData, issuerData, false);
 
+        LocalDateTime startLocalDateTime = Instant.ofEpochMilli( startDate.getTime() )
+                .atZone( ZoneId.systemDefault() )
+                .toLocalDateTime();
+
+        LocalDateTime endLocalDateTime = Instant.ofEpochMilli( endDate.getTime() )
+                .atZone( ZoneId.systemDefault() )
+                .toLocalDateTime();
+
+        Certificate newCertificate = new Certificate(
+                endUserCertificateDTO.getSubjectAlias(),
+                endUserCertificateDTO.getSubjectName().getCn(),
+                endUserCertificateDTO.getIssuerAlias(),
+                subjectSerialNumber,
+                startLocalDateTime,
+                endLocalDateTime,
+                true,
+                CertificateType.ENDUSER);
+
+        if (validateCertificate(newCertificate, cert)) {
+            certificateRepository.saveAndFlush(newCertificate);
+        }
+        else {
+            throw new InvalidCertificateException("Certificate invalid");
+        }
+
         KeyStoreWriter keyStoreWriter = new KeyStoreWriter();
         keyStoreWriter.loadKeyStore(keystorePath, keystorePass.toCharArray());
         keyStoreWriter.writeCertificate(subjectAlias, cert);
@@ -76,11 +110,10 @@ public class CertificateService {
 
     @PostConstruct
     private void init() {
-        System.out.println("\n\nADDING PROVIDER\n\n");
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public Object createIntermediateCertificate(IntermediateCertificateDTO intermediateCertificateDTO) throws AliasAlreadyExistsException {
+    public Object createIntermediateCertificate(IntermediateCertificateDTO intermediateCertificateDTO) throws AliasAlreadyExistsException, InvalidCertificateException {
 
         KeyPair keyPairIssuer = generateKeys();
 
@@ -108,11 +141,34 @@ public class CertificateService {
         CertificateGenerator cg = new CertificateGenerator();
         X509Certificate cert = cg.generateCertificate(subjectData, issuerData, true);
 
+        LocalDateTime startLocalDateTime = Instant.ofEpochMilli( startDate.getTime() )
+                .atZone( ZoneId.systemDefault() )
+                .toLocalDateTime();
+
+        LocalDateTime endLocalDateTime = Instant.ofEpochMilli( endDate.getTime() )
+                .atZone( ZoneId.systemDefault() )
+                .toLocalDateTime();
+
+        Certificate newCertificate = new Certificate(
+                intermediateCertificateDTO.getSubjectAlias(),
+                intermediateCertificateDTO.getSubjectName().getCn(),
+                intermediateCertificateDTO.getIssuerAlias(),
+                subjectSerialNumber,
+                startLocalDateTime,
+                endLocalDateTime,
+                true,
+                CertificateType.INTERMEDIATE);
+        if (validateCertificate(newCertificate, cert)) {
+            certificateRepository.saveAndFlush(newCertificate);
+        }
+        else {
+            throw new InvalidCertificateException("Certificate invalid");
+        }
+
         KeyStoreWriter keyStoreWriter = new KeyStoreWriter();
         keyStoreWriter.loadKeyStore(keystorePath, keystorePass.toCharArray());
-        keyStoreWriter.writeCertificate(subjectAlias, cert);
+        keyStoreWriter.write(subjectAlias, keyPairIssuer.getPrivate(), keystorePass.toCharArray(), cert);
         keyStoreWriter.saveKeyStore(keystorePath, keystorePass.toCharArray());
-        keyStoreWriter.write(subjectAlias,keyPairIssuer.getPrivate(), keystorePass.toCharArray(), cert);
 
         return "Certificate created under alias '" + subjectAlias + "'";
     }
@@ -136,6 +192,39 @@ public class CertificateService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private boolean validateCertificate(Certificate certificate, X509Certificate subjectCert) {
+        // Check certificate date
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        if (currentDateTime.isBefore(certificate.getStart_date()) || currentDateTime.isAfter(certificate.getEnd_date())) {
+            return false;
+        }
+
+        // Check if it is revoked
+        if (!certificate.getActive()) {
+            return false;
+        }
+
+        // Check if root
+        if (certificate.getType() == CertificateType.ROOT) {
+            return true;
+        }
+
+        // Get Certificate objects
+        KeyStoreReader keyStoreReader = new KeyStoreReader();
+        if (subjectCert == null) subjectCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass, certificate.getAlias());
+        X509Certificate issuerCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass, certificate.getIssueralias());
+
+        // Check Signature
+        try {
+            subjectCert.verify(issuerCert.getPublicKey());
+        } catch (CertificateException | NoSuchAlgorithmException | InvalidKeyException | SignatureException | NoSuchProviderException e) {
+            return false;
+        }
+
+        Certificate issuerCertificate = certificateRepository.findByAlias(certificate.getIssueralias());
+        return validateCertificate(issuerCertificate, null);
     }
 
     public List<Certificate> getAll() {

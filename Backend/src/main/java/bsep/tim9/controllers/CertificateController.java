@@ -3,6 +3,7 @@ package bsep.tim9.controllers;
 import bsep.tim9.DTOs.EndUserCertificateDTO;
 import bsep.tim9.DTOs.IntermediateCertificateDTO;
 import bsep.tim9.exceptions.AliasAlreadyExistsException;
+import bsep.tim9.exceptions.InvalidCertificateException;
 import bsep.tim9.model.CertificateType;
 import bsep.tim9.services.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,7 @@ public class CertificateController {
     public ResponseEntity<?> createEndUserCertificate(@RequestBody EndUserCertificateDTO endUserCertificateDTO) {
         try {
             return new ResponseEntity<>(certificateService.createEndUserCertificate(endUserCertificateDTO), HttpStatus.OK);
-        } catch (AliasAlreadyExistsException e) {
-            e.printStackTrace();
+        } catch (AliasAlreadyExistsException | InvalidCertificateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

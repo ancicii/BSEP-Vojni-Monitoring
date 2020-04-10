@@ -10,7 +10,7 @@ import java.util.UUID;
 import bsep.tim9.model.IssuerData;
 import bsep.tim9.model.SubjectData;
 import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.X509Extension;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -52,8 +52,8 @@ public class CertificateGenerator {
 
 			//Postavljanje ekstenzije Basic Constraints
 			certGen.addExtension(
-					X509Extension.basicConstraints,
-					true,
+					Extension.basicConstraints,
+					false,
 					new BasicConstraints(_ca));
 
 			//Generise se sertifikat
