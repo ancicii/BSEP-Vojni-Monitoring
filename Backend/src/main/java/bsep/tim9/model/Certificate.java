@@ -112,4 +112,12 @@ public class Certificate {
     public void setType(CertificateType type) {
         this.type = type;
     }
+
+    public String getIssueralias() {
+        return issueralias;
+    }
+
+    public void setIssueralias(String issueralias) {
+        this.issueralias = issueralias;
+    }
 }
