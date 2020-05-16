@@ -21,7 +21,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class  SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureAuthentication(
@@ -74,9 +74,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))).clearAuthentication(true)
                 .permitAll()
                 .and()
-                .headers().frameOptions().disable()
+                .headers().frameOptions().disable().and()
+                .httpBasic()
                 .and()
-                .httpBasic();
+                .headers().contentSecurityPolicy("script-src 'self' https://trustedscripts.example.com; object-src https://trustedplugins.example.com; report-uri /csp-report-endpoint/");
 
         // Custom JWT based authentication
         httpSecurity.addFilterBefore(authenticationTokenFilterBean(),

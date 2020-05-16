@@ -6,6 +6,10 @@ import bsep.tim9.exceptions.AliasAlreadyExistsException;
 import bsep.tim9.exceptions.InvalidCertificateException;
 import bsep.tim9.model.CertificateType;
 import bsep.tim9.services.CertificateService;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
+import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,8 +62,19 @@ public class CertificateController {
     @GetMapping(value = "/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> revokeCertificate(@PathVariable("id") String alias){
-        certificateService.revoke(alias);
-        return new ResponseEntity<>(certificateService.getOne(alias), HttpStatus.OK);
+
+        String output = Jsoup.clean(alias, Whitelist.basicWithImages());
+
+        Document doc = Jsoup.parse(output);
+
+        doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+
+        System.out.println(doc.body().html());
+
+
+        //certificateService.revoke(alias);
+        //return new ResponseEntity<>(certificateService.getOne(alias), HttpStatus.OK);
+        return new ResponseEntity<>(doc.body().html(), HttpStatus.OK);
     }
 
 }
