@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Component
 public class TokenUtils {
@@ -17,7 +18,7 @@ public class TokenUtils {
 	@Value("myXAuthSecret")
 	private String secret;
 	
-	@Value("18000") //in seconds (5 hours)
+	@Value("600") //in seconds (5 hours)
 	private Long expiration;
 
 	public String getEmailFromToken(String token) {
@@ -69,6 +70,8 @@ public class TokenUtils {
 		claims.put("sub", userDetails.getUsername());
 		claims.put("created", new Date(System.currentTimeMillis()));
 		claims.put("role", userDetails.getAuthorities());
+		Random rand = new Random();
+		claims.put("random", rand.nextInt(1000));
 		return Jwts.builder().setClaims(claims)
 				.setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
