@@ -56,6 +56,14 @@ public class CertificateController {
     @GetMapping(value="/all/{type}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> getAllCertificatesByType(@PathVariable("type") String type) {
+
+        String output = Jsoup.clean(type, Whitelist.basicWithImages());
+
+        Document doc = Jsoup.parse(output);
+
+
+        type = doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml).toString();
+
         return new ResponseEntity<>(certificateService.getAllByType(CertificateType.valueOf(type.toUpperCase())), HttpStatus.OK);
     }
 
@@ -67,14 +75,10 @@ public class CertificateController {
 
         Document doc = Jsoup.parse(output);
 
-        doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+        alias = doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml).toString();
 
-        System.out.println(doc.body().html());
-
-
-        //certificateService.revoke(alias);
-        //return new ResponseEntity<>(certificateService.getOne(alias), HttpStatus.OK);
-        return new ResponseEntity<>(doc.body().html(), HttpStatus.OK);
+        certificateService.revoke(alias);
+        return new ResponseEntity<>(certificateService.getOne(alias), HttpStatus.OK);
     }
 
 }

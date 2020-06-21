@@ -33,19 +33,21 @@ public class AuthenticationController {
     @PostMapping(value = "/login")
     @PreAuthorize("!(hasAuthority('ROLE_ADMIN'))")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO){
-        try {
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    loginDTO.getEmail(), loginDTO.getPassword());
-            Authentication authentication = authenticationManager.authenticate(token);
-            UserDetails details = userDetailsService.loadUserByUsername(loginDTO.getEmail());
-            return new ResponseEntity<>(tokenUtils.generateToken(details), HttpStatus.OK);
+        if(userDetailsService.checkTimer(loginDTO.getEmail())) {
+            try {
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                        loginDTO.getEmail(), loginDTO.getPassword());
+                Authentication authentication = authenticationManager.authenticate(token);
+                UserDetails details = userDetailsService.loadUserByUsername(loginDTO.getEmail());
+                return new ResponseEntity<>(tokenUtils.generateToken(details), HttpStatus.OK);
+            } catch (UsernameNotFoundException ex) {
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            } catch (BadCredentialsException ex) {
+                userDetailsService.increaseValue(loginDTO.getEmail());
+                return new ResponseEntity<>("Invalid email or password", HttpStatus.BAD_REQUEST);
+            }
         }
-        catch(UsernameNotFoundException ex){
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        catch (BadCredentialsException ex) {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>("Can't login for a few minutes", HttpStatus.BAD_REQUEST);
     }
 
 }
