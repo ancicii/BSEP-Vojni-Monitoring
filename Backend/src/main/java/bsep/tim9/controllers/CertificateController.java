@@ -57,12 +57,12 @@ public class CertificateController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> getAllCertificatesByType(@PathVariable("type") String type) {
 
-        String output = Jsoup.clean(type, Whitelist.basicWithImages());
-
-        Document doc = Jsoup.parse(output);
-
-
-        type = doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml).toString();
+//        String output = Jsoup.clean(type, Whitelist.basicWithImages());
+//
+//        Document doc = Jsoup.parse(output);
+//
+//
+//        type = doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml).toString();
 
         return new ResponseEntity<>(certificateService.getAllByType(CertificateType.valueOf(type.toUpperCase())), HttpStatus.OK);
     }
@@ -71,11 +71,11 @@ public class CertificateController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> revokeCertificate(@PathVariable("id") String alias){
 
-        String output = Jsoup.clean(alias, Whitelist.basicWithImages());
-
-        Document doc = Jsoup.parse(output);
-
-        alias = doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml).toString();
+//        String output = Jsoup.clean(alias, Whitelist.basicWithImages());
+//
+//        Document doc = Jsoup.parse(output);
+//
+//        alias = (doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml)).toString();
 
         certificateService.revoke(alias);
         return new ResponseEntity<>(certificateService.getOne(alias), HttpStatus.OK);

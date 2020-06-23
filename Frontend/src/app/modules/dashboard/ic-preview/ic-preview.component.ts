@@ -24,7 +24,7 @@ export class IcPreviewComponent implements OnInit {
   revoke(alias: any) {
     this._certificateApiService.revokeCertificate(alias).subscribe({
       next: () => {
-        window.location.reload();
+        this.dataSource = new IcDataSource(this._certificateApiService)
       }
     })
   }

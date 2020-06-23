@@ -2,6 +2,9 @@ package bsep.SIEMagent.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,8 +30,10 @@ public class SiemAgentController {
         System.out.println("Got inside siem agent method");
         try {
             String endpoint = env.getProperty("endpoint.siem-service");
-
-            return restTemplate.getForObject(new URI(endpoint), String.class);
+            System.out.println("Endpoint name: " + endpoint);
+            RequestEntity<Object> requestEntity = null;
+            ResponseEntity<String> resp = restTemplate.exchange(new URI(endpoint), HttpMethod.GET, requestEntity, String.class);
+            return resp.getBody().trim();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
