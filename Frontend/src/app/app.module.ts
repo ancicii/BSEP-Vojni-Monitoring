@@ -18,10 +18,16 @@ import {MatTableModule} from "@angular/material/table";
 import {DashboardModule} from "./modules/dashboard/dashboard.module";
 import {EndUserCertificateModule} from "./modules/end-user-certificate/end-user-certificate.module";
 import {IntermediateCertificateModule} from "./modules/intermediate-certificate/intermediate-certificate.module";
+import { TemplateComponent } from './template/template.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatIconModule} from "@angular/material/icon";
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TemplateComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +43,11 @@ import {IntermediateCertificateModule} from "./modules/intermediate-certificate/
     MatInputModule,
     MatTableModule,
     EndUserCertificateModule,
-    IntermediateCertificateModule
+    IntermediateCertificateModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: UrlInterceptor, multi: true}],

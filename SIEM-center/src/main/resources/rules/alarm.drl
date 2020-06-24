@@ -1,0 +1,22 @@
+package com.siit.sbnz.sbnztim14.teamcomp
+
+import bsep.SIEMcenter.model.Log;
+
+global bsep.SIEMcenter.model.LogStorage logStorage;
+
+
+rule "nesto"
+	when    Number(intValue > 2)
+    from    accumulate(
+        log: Log (
+            $this:this,
+            host == "host",
+            os == "os",
+            type == "type",
+            message == "message"
+        )
+        over window:time(10s),
+        count($this))
+	then
+		logStorage.addLog("host", "type", "message");
+end
