@@ -24,7 +24,7 @@ export class EucPreviewComponent implements OnInit {
   revoke(alias: any) {
     this._certificateApiService.revokeCertificate(alias).subscribe({
       next: () => {
-        window.location.reload();
+        this.dataSource = new EucDataSource(this._certificateApiService);
       }
     })
   }

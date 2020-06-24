@@ -57,24 +57,25 @@ public class CertificateController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> getAllCertificatesByType(@PathVariable("type") String type) {
 
-        String output = Jsoup.clean(type, Whitelist.basicWithImages());
+//        String output = Jsoup.clean(type, Whitelist.basicWithImages());
+//
+//        Document doc = Jsoup.parse(output);
+//
+//
+//        type = doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml).toString();
 
-        Document doc = Jsoup.parse(output);
-
-        doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
-
-        return new ResponseEntity<>(certificateService.getAllByType(CertificateType.valueOf(doc.body().html().toUpperCase())), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.getAllByType(CertificateType.valueOf(type.toUpperCase())), HttpStatus.OK);
     }
 
     @GetMapping(value = "/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> revokeCertificate(@PathVariable("id") String alias){
 
-        String output = Jsoup.clean(alias, Whitelist.basicWithImages());
-
-        Document doc = Jsoup.parse(output);
-
-        doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+//        String output = Jsoup.clean(alias, Whitelist.basicWithImages());
+//
+//        Document doc = Jsoup.parse(output);
+//
+//        alias = (doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml)).toString();
 
         certificateService.revoke(doc.body().html());
         return new ResponseEntity<>(certificateService.getOne(doc.body().html()), HttpStatus.OK);

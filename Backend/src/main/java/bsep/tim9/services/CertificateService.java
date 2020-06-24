@@ -240,9 +240,9 @@ public class CertificateService {
     }
 
     public void revoke(String alias) {
-        for (Certificate cert : certificateRepository.findAllByIssueralias(alias)) {
-            revoke(cert.getAlias());
-        }
+//        for (Certificate cert : certificateRepository.findAllByIssueralias(alias)) {
+//            revoke(cert.getAlias());
+//        }
         Certificate certificate = certificateRepository.findByAlias(alias);
         certificate.setActive(false);
         certificateRepository.save(certificate);
