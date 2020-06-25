@@ -32,7 +32,9 @@ export class AlarmsDataSource extends DataSource<any> {
     super();
   }
   connect(): Observable<any> {
-    return this.siemCenterService.getAlarms();
+    let d = this.siemCenterService.getAlarms();
+    console.log(d);
+    return d;
   }
   disconnect() {}
 }

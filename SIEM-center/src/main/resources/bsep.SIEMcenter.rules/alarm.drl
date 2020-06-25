@@ -28,7 +28,9 @@ rule "Login fail"
 	then
 	    modify($l1){ pass = false };
 		logStorage.addLog("Too many unsuccessful login attempts from " + $machine);
-endrule "ss"
+end
+
+rule "DOS attack"
     when
     $l1 : Log(
         $machine: machine,
@@ -36,47 +38,19 @@ endrule "ss"
         $os: os,
         pass == true
     )
-    Number(intValue >= ss)
+    Number(intValue >= 35)
         from accumulate(
             $l2: Log (
                 this != $l1,
                 os == $os,
                 type == $type,
                 machine == $machine,
-                message == "s",
-                this meets[sss] $l1,
+                message == "Resources accessed by GET method",
+                this meets[5s] $l1,
                 pass == true
             ),
             count($l2))
 	then
-        modify($l1){ pass = false };
-
+	    modify($l1){ pass = false };
+		logStorage.addLog("Too many resource calls from " + $machine);
 end
-
-
-rule "dasdas"
-    when
-    $l1 : Log(
-        $machine: machine,
-        $type: type,
-        $os: os,
-        pass == true
-    )
-    Number(intValue >= dassa)
-        from accumulate(
-            $l2: Log (
-                this != $l1,
-                os == $os,
-                type == $type,
-                machine == $machine,
-                message == "sdas",
-                this meets[dsadsas] $l1,
-                pass == true
-            ),
-            count($l2))
-	then
-        modify($l1){ pass = false };
-
-end
-
-
