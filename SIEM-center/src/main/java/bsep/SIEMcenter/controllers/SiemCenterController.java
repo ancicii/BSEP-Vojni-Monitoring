@@ -2,12 +2,15 @@ package bsep.SIEMcenter.controllers;
 
 import bsep.SIEMcenter.exceptions.BadRequestException;
 import bsep.SIEMcenter.model.Log;
+import bsep.SIEMcenter.model.LogStorage;
 import bsep.SIEMcenter.model.LogTempModel;
 import bsep.SIEMcenter.services.SiemCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/siem-center")
@@ -34,9 +37,9 @@ public class SiemCenterController {
         boolean rez = newSiemCenterService.createNewAlarm(logTempModel);
 
         if (rez) {
-            return new ResponseEntity<>("New early game rule added successfully", HttpStatus.OK);
+            return new ResponseEntity<>("New rule added successfully", HttpStatus.OK);
         } else {
-            throw new BadRequestException("Error while creating new early game rule");
+            throw new BadRequestException("Error while creating rule");
         }
 
     }
@@ -52,5 +55,12 @@ public class SiemCenterController {
         }
     }
 
+    @GetMapping(value = "/alarms")
+    public ResponseEntity<List<String>> alarmList(){
+
+        LogStorage logStorage = newSiemCenterService.getAlarms();
+        return new ResponseEntity<>(logStorage.getLogs(),HttpStatus.OK);
+
+    }
 
 }

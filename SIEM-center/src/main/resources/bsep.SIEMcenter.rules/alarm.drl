@@ -1,0 +1,25 @@
+package bsep.SIEMcenter.rules
+
+import bsep.SIEMcenter.model.Log;
+import bsep.SIEMcenter.model.LogStorage;
+
+global bsep.SIEMcenter.model.LogStorage logStorage;
+
+rule "nesto"
+    when
+    Number(intValue >= 2)
+        from accumulate(
+            Log (
+                $this:this,
+                os == "windows",
+                type == "warning",
+                message == "poruka"
+            )
+            over window:time(5s),
+            count($this))
+	then
+	    System.out.println("HEHE " + Log.class);
+		logStorage.addLog("message");
+end
+
+
