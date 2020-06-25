@@ -14,22 +14,19 @@ import {UrlInterceptor} from './core/interceptors/url.interceptor';
 import {TokenInterceptor} from './core/interceptors/token.interceptor';
 import {MatInputModule} from "@angular/material/input";
 import {MatTableModule} from "@angular/material/table";
-// import {EucPreviewModule} from "./modules/dashboard/euc-preview/euc-preview.module";
 import {DashboardModule} from "./modules/dashboard/dashboard.module";
 import {EndUserCertificateModule} from "./modules/end-user-certificate/end-user-certificate.module";
 import {IntermediateCertificateModule} from "./modules/intermediate-certificate/intermediate-certificate.module";
-import { TemplateComponent } from './template/template.component';
+import { TemplateComponent } from './modules/dashboard/template/template.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 import {MatOptionModule} from "@angular/material/core";
 import {MatSelectModule} from "@angular/material/select";
-import { AlarmsComponent } from './modules/alarms/alarms.component';
+import { AlarmsComponent } from './modules/dashboard/alarms/alarms.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    TemplateComponent,
-    AlarmsComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -53,6 +50,7 @@ import { AlarmsComponent } from './modules/alarms/alarms.component';
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: UrlInterceptor, multi: true}],
+
   bootstrap: [AppComponent]
 
 })

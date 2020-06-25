@@ -12,7 +12,10 @@ export class UrlInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
+    if(req.url.startsWith("http")){
+      const apiReq = req.clone({ url: `${req.url}` });
+      return next.handle(apiReq);
+    }
     const apiReq = req.clone({ url: `${this._baseUrl}/${req.url}` });
     return next.handle(apiReq);
   }
