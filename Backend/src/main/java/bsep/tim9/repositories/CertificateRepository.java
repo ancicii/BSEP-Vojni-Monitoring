@@ -11,5 +11,6 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     List<Certificate> findAllByTypeAndIsActiveTrue(CertificateType type);
     List<Certificate> findAllByIsActiveTrue();
     List<Certificate> findAllByIssueralias(String alias);
+    List<Certificate> findAllByTypeIsNotAndIsActiveTrue(CertificateType type);
 
 }

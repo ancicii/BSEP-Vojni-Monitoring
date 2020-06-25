@@ -29,11 +29,10 @@ export class LoginComponent implements OnInit {
     const loginObserver = {
       next: x =>{
         localStorage.setItem('token', x);
-        console.log("Welcome!");
+        console.log("Welcome!")
         this.router.navigate(['/dashboard/euc/preview']);
       },
       error: (err: any) => {
-        console.log(err);
         console.log(JSON.parse(JSON.stringify(err))["error"]);
       }
     };
