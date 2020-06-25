@@ -136,12 +136,10 @@ public class KeyStoreReader {
 				X500Name subjectName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
 				X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getIssuer();
 				if(!subjectName.equals(issuerName)){
-//					Certificate[] certifiacatesChain  = ks.getCertificateChain(alias);
-//					Certificate issuer =  certifiacatesChain[1];
 					bsep.tim9.model.Certificate certificateModel = new bsep.tim9.model.Certificate(
 							ts.getCertificateAlias(cert),
 							IETFUtils.valueToString(issuerName.getRDNs(BCStyle.CN)[0].getFirst().getValue()),
-							ts.getCertificateAlias(cert),
+							IETFUtils.valueToString(issuerName.getRDNs(BCStyle.CN)[0].getFirst().getValue()),
 							((X509Certificate) cert).getSerialNumber().toString(),
 							((X509Certificate) cert).getNotBefore().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
 							((X509Certificate) cert).getNotAfter().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {EndUserCertificateModel} from "../shared/model/end-user-certificate.model";
 import {IntermediateCertificateModel} from "../shared/model/intermediate-certificate.model";
 
@@ -7,24 +7,29 @@ import {IntermediateCertificateModel} from "../shared/model/intermediate-certifi
   providedIn: 'root'
 })
 export class CertificateApiService {
+  private _headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': 'true'
+  });
 
   constructor(private _http: HttpClient) {
   }
 
   getEndUserCertificates(){
-    return this._http.get(`certificate/all/enduser`);
+    return this._http.get(`certificate/all/enduser`, {headers: this._headers});
   }
 
   getIntermediateCertificates(){
-    return this._http.get(`certificate/all/intermediate`);
+    return this._http.get(`certificate/all/intermediate`, {headers: this._headers});
   }
 
   getAllCertificates(){
-    return this._http.get(`certificate/allIntermediateAndRoot`);
+    return this._http.get(`certificate/allIntermediateAndRoot`, {headers: this._headers});
   }
 
   revokeCertificate(alias : String){
-      return this._http.get(`certificate/delete/${alias}`);
+      return this._http.get(`certificate/delete/${alias}`, {headers: this._headers});
   }
 
   createEndUserCertificate(eucModel: EndUserCertificateModel) {
@@ -42,7 +47,7 @@ export class CertificateApiService {
         uid: eucModel.subjectName.uid,
       },
       subjectPublicKey: eucModel.subjectPublicKey
-    });
+    }, {headers: this._headers, responseType: 'text'});
   }
 
   createIntermediateCertificate(icModel: IntermediateCertificateModel) {
@@ -59,10 +64,10 @@ export class CertificateApiService {
         e: icModel.subjectName.e,
         uid: icModel.subjectName.uid,
       }
-    });
+    }, {headers: this._headers, responseType: 'text'});
   }
 
   getAllCertificates1() {
-    return this._http.get(`certificate/all`);
+    return this._http.get(`certificate/all`,{headers: this._headers});
   }
 }

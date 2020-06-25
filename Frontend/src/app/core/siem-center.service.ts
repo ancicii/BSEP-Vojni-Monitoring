@@ -6,8 +6,6 @@ export interface ILogTemplate {
   name: string;
   number: string;
   time: string;
-  os: string;
-  type: string;
   message: string;
   sendMessage: string;
 }
@@ -25,8 +23,6 @@ export class SiemCenterService {
         name: log.name,
         number: log.number,
         time: log.time,
-        os: log.os,
-        type: log.type,
         message: log.message,
         sendMessage: log.sendMessage
       });

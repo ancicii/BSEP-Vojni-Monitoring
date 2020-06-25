@@ -12,7 +12,7 @@ import {Router} from "@angular/router";
 })
 export class IcPreviewComponent implements OnInit {
   dataSource = new IcDataSource(this._certificateApiService)
-  displayedColumns = ['serialNumber', 'alias', 'issuerAlias', 'issuerName',
+  displayedColumns = ['serialNumber', 'alias', 'issuerAlias',
     'startDate', 'endDate', 'isActive', 'revoke'];
 
   constructor(private _certificateApiService: CertificateApiService,

@@ -21,16 +21,6 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>OS</mat-label>
-      <mat-select formControlName="os">
-        <mat-option *ngFor="let os of osList" [value]="os">
-          {{os}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-
-    <mat-form-field appearance="outline">
       <mat-label>Type</mat-label>
       <mat-select formControlName="type">
         <mat-option *ngFor="let type of types" [value]="type">
