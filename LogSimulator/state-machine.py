@@ -17,4 +17,4 @@ if __name__ == '__main__':
         NoAlarmState: 8
     }
     state_machine = StateMachine(state_dict)
-    state_machine.run_all("file.txt")
+    state_machine.run_all("..\\SIEM-agent\\src\\main\\resources\\log1.txt")

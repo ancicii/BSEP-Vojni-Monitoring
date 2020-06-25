@@ -54,7 +54,6 @@ public class SiemAgentService {
         new Thread(() -> {
             try {
                 while (true) {
-                    System.out.println("\nTHREAD RUN\n");
                     runFileLogScan();
                     runWindowsLogScan();
                     Thread.sleep(500);
@@ -77,12 +76,12 @@ public class SiemAgentService {
         while(sc.hasNextLine()) {
             line = sc.nextLine();
             Log newLog = Log.parse(line);
-//            try {
-//                sendLog(newLog);
-//            } catch (JsonProcessingException | URISyntaxException e) {
-//                e.printStackTrace();
-//            }
-            System.out.println(line);
+            try {
+                sendLog(newLog);
+            } catch (JsonProcessingException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+//            System.out.println(line);
         }
         lastFileLog = line;
         sc.close();
@@ -92,7 +91,6 @@ public class SiemAgentService {
         groupLogScan("Application");
         groupLogScan("Security");
         groupLogScan("System");
-        lastWindowsNumber.forEach((key, value) -> System.out.println(key + " " + value));
     }
 
     private void groupLogScan(String group) {
