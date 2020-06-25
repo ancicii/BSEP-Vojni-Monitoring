@@ -14,7 +14,7 @@ class StateMachine:
 if __name__ == '__main__':
     state_dict = {
         BruteForceAttackState: 50,
-        NoAlarmState: 20
+        NoAlarmState: 8
     }
     state_machine = StateMachine(state_dict)
     state_machine.run_all("file.txt")

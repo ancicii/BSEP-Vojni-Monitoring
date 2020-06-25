@@ -17,13 +17,14 @@ public class Log {
     public String os;
     public String type;
     public String host;
+    public String machine;
 
     public static Log parse(String logString) {
         String[] fields = logString.split("\\|");
-        if (fields.length != 6) {
+        if (fields.length != 7) {
             return null;
         }
-        return new Log(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5]);
+        return new Log(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5], fields[6]);
     }
 
 }

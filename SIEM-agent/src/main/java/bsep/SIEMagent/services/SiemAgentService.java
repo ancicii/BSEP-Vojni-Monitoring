@@ -43,7 +43,9 @@ public class SiemAgentService {
     @Value("${endpoint.siem-log}")
     private String endpoint;
 
-    private String filePath = "C:\\Users\\Acer Nitro\\Home\\Git\\BSEP-Vojni-Monitoring\\LogSimulator\\file.txt";
+    @Value("${filelogger.filepath}")
+    private String filePath;
+
     private String lastFileLog = "";
     private HashMap<String, Integer> lastWindowsNumber = initHashMap();
 
@@ -55,7 +57,7 @@ public class SiemAgentService {
                     System.out.println("\nTHREAD RUN\n");
                     runFileLogScan();
                     runWindowsLogScan();
-                    Thread.sleep(3000);
+                    Thread.sleep(500);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -75,11 +77,12 @@ public class SiemAgentService {
         while(sc.hasNextLine()) {
             line = sc.nextLine();
             Log newLog = Log.parse(line);
-            try {
-                sendLog(newLog);
-            } catch (JsonProcessingException | URISyntaxException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                sendLog(newLog);
+//            } catch (JsonProcessingException | URISyntaxException e) {
+//                e.printStackTrace();
+//            }
+            System.out.println(line);
         }
         lastFileLog = line;
         sc.close();
@@ -111,9 +114,10 @@ public class SiemAgentService {
             String logType = record.getType().name();
             String logHost = record.getSource();
             String logMessage = System.getProperty("os.name") + " " + logType + " log for event ID " + record.getEventId();
+            String logMachine = "localhost";
 //            String fullLog = timestamp + "|" + logId + "|" + logMessage + "|" + logOs + "|" + logType + "|" + logHost;
 //            System.out.println(fullLog);
-            Log newLog = new Log(timestamp, logId, logMessage, logOs, logType, logHost);
+            Log newLog = new Log(timestamp, logId, logMessage, logOs, logType, logHost, logMachine);
             try {
                 sendLog(newLog);
             } catch (JsonProcessingException | URISyntaxException e) {

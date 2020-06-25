@@ -28,14 +28,15 @@ class BruteForceAttackState(State):
             os = os_val
             log_type = "Informational"
             host = log_host
+            log_machine = addr_val
 
-            log = str(timestamp)+"|"+str(log_id)+"|"+message+"|"+os+"|"+log_type+"|"+host
+            log = str(timestamp)+"|"+str(log_id)+"|"+message+"|"+os+"|"+log_type+"|"+host+"|"+log_machine
             print(log)
 
             f = open(self.path, "a")
             f.write(log + "\n")
             f.close()
-            time.sleep(0.5)
+            time.sleep(0.2)
 
 
 class NoAlarmState(State):
@@ -50,11 +51,12 @@ class NoAlarmState(State):
             os = os_val
             log_type = "Informational"
             host = log_host
+            log_machine = addr_val
 
-            log = str(timestamp)+"|"+str(log_id)+"|"+message+"|"+os+"|"+log_type+"|"+host
+            log = str(timestamp)+"|"+str(log_id)+"|"+message+"|"+os+"|"+log_type+"|"+host+"|"+log_machine
             print(log)
 
             f = open(self.path, "a")
             f.write(log + "\n")
             f.close()
-            time.sleep(1)
+            time.sleep(1.5)
