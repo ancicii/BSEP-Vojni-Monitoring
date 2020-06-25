@@ -1,0 +1,43 @@
+template header
+name
+number
+time
+message
+sendmessage
+
+package rlz
+
+import bsep.SIEMcenter.model.Log;
+
+global bsep.SIEMcenter.model.LogStorage logStorage;
+
+
+template "alarm"
+
+rule "@{name}"
+    when
+    $l1 : Log(
+        $machine: machine,
+        $type: type,
+        $os: os,
+        pass == true
+    )
+    Number(intValue >= @{number})
+        from accumulate(
+            $l2: Log (
+                this != $l1,
+                os == $os,
+                type == $type,
+                machine == $machine,
+                message == "@{message}",
+                this meets[@{time}s] $l1,
+                pass == true
+            ),
+            count($l2))
+	then
+        modify($l1){ pass = false };
+        logStorage.addLog("@{sendmessage} " + $machine);
+end
+
+
+end template

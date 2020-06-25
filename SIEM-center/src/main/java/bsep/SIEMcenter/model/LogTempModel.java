@@ -14,8 +14,6 @@ public class LogTempModel
     private String name;
     private String number;
     private String time;
-    private String os;
-    private String type;
     private String message;
     private String sendmessage;
 

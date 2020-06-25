@@ -2,7 +2,7 @@
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <kbase name="rules" packages="rules">
+    <kbase name="name" packages="bsep.SIEMcenter.rules" eventProcessingMode="stream">
         <ksession name="ksession-rules"/>
     </kbase>
 

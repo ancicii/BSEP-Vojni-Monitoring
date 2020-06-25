@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class LogStorage {
     private ArrayList<String> logs = new ArrayList<>();
 
-    public void addLog(String host, String type, String message) {
-        logs.add("An alarm was triggered by " + host + " as a " + type + " with a following message " + message);
+    public void addLog(String message) {
+        logs.add(message);
     }
 }
