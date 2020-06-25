@@ -34,7 +34,7 @@ public class SiemAgentApplication {
 	@Bean
 	public RestTemplate getRestTemplate() throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyManagementException {
 		RestTemplate restTemplate = new RestTemplate();
-		File file = new File("SIEM-agent/src/main/resources/siem-agent.jks");
+		File file = new File("src/main/resources/siem-agent.jks");
 		InputStream is = new FileInputStream(file);
 		KeyStore keyStore = KeyStore.getInstance("jks");
 		keyStore.load(is, "pass123".toCharArray());
