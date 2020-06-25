@@ -13,7 +13,7 @@ rule "Login fail"
         $os: os,
         pass == true
     )
-    Number(intValue >= 2)
+    Number(intValue >= 15)
         from accumulate(
             $l2: Log (
                 this != $l1,

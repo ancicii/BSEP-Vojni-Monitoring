@@ -25,8 +25,8 @@ public class SiemAgentApplication {
 	@Bean
 	public RestTemplate getRestTemplate() throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
-		File file = new File("SIEM-agent/src/main/resources/keystore.jks");
-		File fileTrust = new File("SIEM-agent/src/main/resources/truststore.jks");
+		File file = new File("src/main/resources/keystore.jks");
+		File fileTrust = new File("src/main/resources/truststore.jks");
 		InputStream is = new FileInputStream(file);
 //		KeyStore keyStore = KeyStore.getInstance("jks");
 //		keyStore.load(is, "pass123".toCharArray());
