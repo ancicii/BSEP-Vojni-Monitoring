@@ -20,7 +20,7 @@ export class CertificateApiService {
   }
 
   getAllCertificates(){
-    return this._http.get(`certificate/all`);
+    return this._http.get(`certificate/allIntermediateAndRoot`);
   }
 
   revokeCertificate(alias : String){
@@ -60,5 +60,9 @@ export class CertificateApiService {
         uid: icModel.subjectName.uid,
       }
     });
+  }
+
+  getAllCertificates1() {
+    return this._http.get(`certificate/all`);
   }
 }

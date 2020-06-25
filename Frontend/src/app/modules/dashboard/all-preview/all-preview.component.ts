@@ -34,7 +34,7 @@ export class EucDataSource extends DataSource<any> {
     super();
   }
   connect(): Observable<any> {
-    return this._certificateApiService.getAllCertificates();
+    return this._certificateApiService.getAllCertificates1();
   }
   disconnect() {}
 }
