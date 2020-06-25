@@ -27,10 +27,8 @@ public class SiemAgentController {
 
     @GetMapping(value = "/ms-data")
     public String getAgentData() {
-        System.out.println("Got inside siem agent method");
         try {
             String endpoint = env.getProperty("endpoint.siem-service");
-            System.out.println("Endpoint name: " + endpoint);
             RequestEntity<Object> requestEntity = null;
             ResponseEntity<String> resp = restTemplate.exchange(new URI(endpoint), HttpMethod.GET, requestEntity, String.class);
             return resp.getBody().trim();

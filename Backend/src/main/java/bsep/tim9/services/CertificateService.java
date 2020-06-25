@@ -13,20 +13,18 @@ import bsep.tim9.utilities.Base64KeyDecoder;
 import bsep.tim9.utilities.CertificateGenerator;
 import bsep.tim9.utilities.KeyStoreReader;
 import bsep.tim9.utilities.KeyStoreWriter;
-import org.bouncycastle.asn1.ASN1Object;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
+import java.io.*;
 import java.security.*;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
@@ -46,6 +44,30 @@ public class CertificateService {
     @Value("${keystore_pass}")
     private String keystorePass;
 
+    @Value("${truststore_path}")
+    private String truststorePath;
+
+    @Value("${truststore_pass}")
+    private String truststorePass;
+
+    @Value("${certificates_path}")
+    private String resourcesPath;
+
+    public static final String BEGIN_CERT = "-----BEGIN CERTIFICATE-----";
+    public static final String END_CERT = "-----END CERTIFICATE-----";
+    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
+
+
+    @EventListener(ApplicationReadyEvent.class)
+    protected void storeCertificatesToDB(){
+        KeyStoreReader keyStoreReader = new KeyStoreReader();
+        List<Certificate> certificates = keyStoreReader.readAllCertificates
+                (keystorePath, keystorePass.toCharArray(), truststorePath, truststorePass.toCharArray());
+        for (Certificate cert : certificates){
+            certificateRepository.saveAndFlush(cert);
+        }
+    }
+
 
     public String createEndUserCertificate(EndUserCertificateDTO endUserCertificateDTO) throws AliasAlreadyExistsException, InvalidCertificateException {
         Base64KeyDecoder base64KeyDecoder = new Base64KeyDecoder();
@@ -59,11 +81,11 @@ public class CertificateService {
         Date startDate = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(startDate);
-        cal.add(Calendar.YEAR, 2);
+        cal.add(Calendar.YEAR, 1);
         Date endDate = cal.getTime();
 
         KeyStoreReader keyStoreReader = new KeyStoreReader();
-        if (keyStoreReader.checkIfAliasExists(keystorePath, keystorePass, subjectAlias)) {
+        if (keyStoreReader.checkIfAliasExists(truststorePath, truststorePass, subjectAlias)) {
             throw new AliasAlreadyExistsException("Alias already taken");
         }
 
@@ -101,9 +123,11 @@ public class CertificateService {
         }
 
         KeyStoreWriter keyStoreWriter = new KeyStoreWriter();
-        keyStoreWriter.loadKeyStore(keystorePath, keystorePass.toCharArray());
+        keyStoreWriter.loadKeyStore(truststorePath, truststorePass.toCharArray());
         keyStoreWriter.writeCertificate(subjectAlias, cert);
-        keyStoreWriter.saveKeyStore(keystorePath, keystorePass.toCharArray());
+        keyStoreWriter.saveKeyStore(truststorePath, truststorePass.toCharArray());
+
+        createCertFile(endUserCertificateDTO.getSubjectAlias(), cert);
 
         return "Certificate created under alias '" + subjectAlias + "'";
     }
@@ -113,7 +137,7 @@ public class CertificateService {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public Object createIntermediateCertificate(IntermediateCertificateDTO intermediateCertificateDTO) throws AliasAlreadyExistsException, InvalidCertificateException {
+    public String createIntermediateCertificate(IntermediateCertificateDTO intermediateCertificateDTO) throws AliasAlreadyExistsException, InvalidCertificateException, NoSuchProviderException, KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
 
         KeyPair keyPairIssuer = generateKeys();
 
@@ -129,7 +153,7 @@ public class CertificateService {
         Date endDate = cal.getTime();
 
         KeyStoreReader keyStoreReader = new KeyStoreReader();
-        if (keyStoreReader.checkIfAliasExists(keystorePath, keystorePass, subjectAlias)) {
+        if (keyStoreReader.checkIfAliasExists(truststorePath, truststorePass, subjectAlias)) {
             throw new AliasAlreadyExistsException("Alias already taken");
         }
 
@@ -140,6 +164,7 @@ public class CertificateService {
 
         CertificateGenerator cg = new CertificateGenerator();
         X509Certificate cert = cg.generateCertificate(subjectData, issuerData, true);
+
 
         LocalDateTime startLocalDateTime = Instant.ofEpochMilli( startDate.getTime() )
                 .atZone( ZoneId.systemDefault() )
@@ -165,12 +190,41 @@ public class CertificateService {
             throw new InvalidCertificateException("Certificate invalid");
         }
 
+        //kreiranje lanca sertifikata
+        KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+        //ucitavamo podatke
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(keystorePath));
+        ks.load(in, keystorePass.toCharArray());
+        java.security.cert.Certificate[] certificates = ks.getCertificateChain(issuerAlias);
+        java.security.cert.Certificate[] chain = new java.security.cert.Certificate[certificates.length+1];
+        chain[0] = cert;
+        for (int i = 0; i< certificates.length; i++){
+            chain[i+1] = certificates[i];
+        }
         KeyStoreWriter keyStoreWriter = new KeyStoreWriter();
         keyStoreWriter.loadKeyStore(keystorePath, keystorePass.toCharArray());
-        keyStoreWriter.write(subjectAlias, keyPairIssuer.getPrivate(), keystorePass.toCharArray(), cert);
+        keyStoreWriter.write(subjectAlias, keyPairIssuer.getPrivate(), keystorePass.toCharArray(), chain);
         keyStoreWriter.saveKeyStore(keystorePath, keystorePass.toCharArray());
 
+        createCertFile(intermediateCertificateDTO.getSubjectAlias(), cert);
+
         return "Certificate created under alias '" + subjectAlias + "'";
+    }
+
+    private void createCertFile(String subjectAlias, X509Certificate cert) {
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(resourcesPath + "/" + subjectAlias + ".cer");
+            Base64.Encoder encoder = Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
+
+            byte[] rawCrtText = cert.getEncoded();
+            String encodedCertText = new String(encoder.encode(rawCrtText));
+            String toWrite = BEGIN_CERT + LINE_SEPARATOR + encodedCertText + LINE_SEPARATOR + END_CERT;
+            out.write(toWrite.getBytes());
+            out.close();
+        } catch (CertificateEncodingException| IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private KeyPair generateKeys() {
@@ -213,8 +267,8 @@ public class CertificateService {
 
         // Get Certificate objects
         KeyStoreReader keyStoreReader = new KeyStoreReader();
-        if (subjectCert == null) subjectCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass, certificate.getAlias());
-        X509Certificate issuerCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass, certificate.getIssueralias());
+        if (subjectCert == null) subjectCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass.toCharArray(), certificate.getAlias());
+        X509Certificate issuerCert = (X509Certificate) keyStoreReader.readCertificate(keystorePath, keystorePass.toCharArray(), certificate.getIssueralias());
 
         // Check Signature
         try {
@@ -231,6 +285,11 @@ public class CertificateService {
         return certificateRepository.findAllByIsActiveTrue();
     }
 
+
+    public List<Certificate> getAllNonEndUser() {
+        return certificateRepository.findAllByTypeIsNotAndIsActiveTrue(CertificateType.ENDUSER);
+    }
+
     public List<Certificate> getAllByType(CertificateType type){
         return certificateRepository.findAllByTypeAndIsActiveTrue(type);
     }
@@ -240,9 +299,6 @@ public class CertificateService {
     }
 
     public void revoke(String alias) {
-//        for (Certificate cert : certificateRepository.findAllByIssueralias(alias)) {
-//            revoke(cert.getAlias());
-//        }
         Certificate certificate = certificateRepository.findByAlias(alias);
         certificate.setActive(false);
         certificateRepository.save(certificate);

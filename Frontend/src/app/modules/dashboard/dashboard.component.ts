@@ -12,10 +12,10 @@ import {AuthenticationApiService} from "../../core/authentication-api.service";
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements AfterViewInit, OnInit {
-  @ViewChild(PaginatorComponent, {static: false}) paginator: PaginatorComponent;
-  @ViewChild(EucPreviewComponent, {static: false}) eucPreviewComponent: EucPreviewComponent;
-  @ViewChild(AllPreviewComponent, {static: false}) allPreviewComponent: AllPreviewComponent;
-  @ViewChild(IcPreviewComponent, {static: false}) icPreviewComponent: IcPreviewComponent;
+  @ViewChild(PaginatorComponent) paginator: PaginatorComponent;
+  @ViewChild(EucPreviewComponent) eucPreviewComponent: EucPreviewComponent;
+  @ViewChild(AllPreviewComponent) allPreviewComponent: AllPreviewComponent;
+  @ViewChild(IcPreviewComponent) icPreviewComponent: IcPreviewComponent;
   _content: string;
   role: string;
 

@@ -12,7 +12,7 @@ import {Router} from "@angular/router";
 })
 export class EucPreviewComponent implements OnInit {
   dataSource = new EucDataSource(this._certificateApiService)
-  displayedColumns = ['serialNumber', 'alias', 'issuerAlias', 'issuerName',
+  displayedColumns = ['serialNumber', 'alias', 'issuerName',
     'startDate', 'endDate', 'isActive', 'revoke'];
 
   constructor(private _certificateApiService: CertificateApiService,

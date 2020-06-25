@@ -10,9 +10,16 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
+import bsep.tim9.model.CertificateType;
 import bsep.tim9.model.IssuerData;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 
 public class KeyStoreReader {
@@ -56,18 +63,17 @@ public class KeyStoreReader {
 	/**
 	 * Ucitava sertifikat is KS fajla
 	 */
-    public Certificate readCertificate(String keyStoreFile, String keyStorePass, String alias) {
+    public Certificate readCertificate(String keyStoreFile, char[] keyStorePass, String alias) {
 		try {
 			//kreiramo instancu KeyStore
 			KeyStore ks = KeyStore.getInstance("JKS", "SUN");
 			//ucitavamo podatke
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
-			char[] temp = keyStorePass.toCharArray();
-			ks.load(in, temp);
+			ks.load(in, keyStorePass);
 
 			Certificate ret = ks.getCertificate(alias);
 			in.close();
-			ks.store(new FileOutputStream(keyStoreFile), temp);
+			ks.store(new FileOutputStream(keyStoreFile), keyStorePass);
 			return ret;
 
 		} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException | IOException e) {
@@ -75,6 +81,86 @@ public class KeyStoreReader {
 		}
 		return null;
 	}
+
+	public List<bsep.tim9.model.Certificate> readAllCertificates(String keyStoreFile, char[] keyStorePass, String trustStoreFile, char[] trustStorePass){
+		List<bsep.tim9.model.Certificate> allCertificates = new ArrayList<>();
+    	try {
+			//kreiramo instancu KeyStore
+			KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+			//ucitavamo podatke
+			BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
+			ks.load(in, keyStorePass);
+
+			for (Enumeration<String> aliases = ks.aliases(); aliases.hasMoreElements();){
+				String alias = aliases.nextElement();
+				Certificate cert =  ks.getCertificate(alias);
+				X500Name subjectName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
+				X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getIssuer();
+				if(subjectName.equals(issuerName)){
+					bsep.tim9.model.Certificate certificateModel = new bsep.tim9.model.Certificate(
+							ks.getCertificateAlias(cert),
+							IETFUtils.valueToString(issuerName.getRDNs(BCStyle.CN)[0].getFirst().getValue()),
+							ks.getCertificateAlias(cert),
+							((X509Certificate) cert).getSerialNumber().toString(),
+							((X509Certificate) cert).getNotBefore().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+							((X509Certificate) cert).getNotAfter().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+							true,
+							CertificateType.ROOT);
+					allCertificates.add(certificateModel);
+				}
+				else{
+					Certificate[] certifiacatesChain  = ks.getCertificateChain(alias);
+					Certificate issuer =  certifiacatesChain[1];
+					bsep.tim9.model.Certificate certificateModel = new bsep.tim9.model.Certificate(
+							ks.getCertificateAlias(cert),
+							IETFUtils.valueToString(issuerName.getRDNs(BCStyle.CN)[0].getFirst().getValue()),
+							ks.getCertificateAlias(issuer),
+							((X509Certificate) cert).getSerialNumber().toString(),
+							((X509Certificate) cert).getNotBefore().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+							((X509Certificate) cert).getNotAfter().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+							true,
+							CertificateType.INTERMEDIATE);
+					allCertificates.add(certificateModel);
+				}
+
+			}
+
+			KeyStore ts = KeyStore.getInstance("JKS", "SUN");
+			//ucitavamo podatke
+			in = new BufferedInputStream(new FileInputStream(trustStoreFile));
+			ts.load(in, trustStorePass);
+
+			for (Enumeration<String> aliases = ts.aliases(); aliases.hasMoreElements();) {
+				String alias = aliases.nextElement();
+				Certificate cert = ts.getCertificate(alias);
+				X500Name subjectName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
+				X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getIssuer();
+				if(!subjectName.equals(issuerName)){
+					bsep.tim9.model.Certificate certificateModel = new bsep.tim9.model.Certificate(
+							ts.getCertificateAlias(cert),
+							IETFUtils.valueToString(issuerName.getRDNs(BCStyle.CN)[0].getFirst().getValue()),
+							IETFUtils.valueToString(issuerName.getRDNs(BCStyle.CN)[0].getFirst().getValue()),
+							((X509Certificate) cert).getSerialNumber().toString(),
+							((X509Certificate) cert).getNotBefore().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+							((X509Certificate) cert).getNotAfter().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(),
+							true,
+							CertificateType.ENDUSER);
+					allCertificates.add(certificateModel);
+				}
+
+			}
+
+			in.close();
+			ks.store(new FileOutputStream(keyStoreFile), keyStorePass);
+			ts.store(new FileOutputStream(trustStoreFile), trustStorePass);
+			return allCertificates;
+
+		} catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException | IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	/**
 	 * Ucitava niz sertifikata is KS fajla

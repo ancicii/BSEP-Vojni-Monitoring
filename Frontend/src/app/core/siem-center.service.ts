@@ -6,8 +6,6 @@ export interface ILogTemplate {
   name: string;
   number: string;
   time: string;
-  os: string;
-  type: string;
   message: string;
   sendMessage: string;
 }
@@ -20,16 +18,18 @@ export class SiemCenterService {
  constructor(private http: HttpClient ) {}
 
   createTemplate(log: ILogTemplate) {
-    return this.http.post<ILogTemplate>('http://localhost:8081/api/siem-center/template',
+    return this.http.post<ILogTemplate>('http://localhost:8081/siem-center/template',
       {
         name: log.name,
         number: log.number,
         time: log.time,
-        os: log.os,
-        type: log.type,
         message: log.message,
         sendMessage: log.sendMessage
       });
+  }
+
+  getAlarms(){
+   return this.http.get('http://localhost:8081/siem-center/alarms');
   }
 
 }

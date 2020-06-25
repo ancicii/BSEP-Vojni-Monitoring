@@ -17,5 +17,4 @@ public class SiemCenterApplication {
 	public KieContainer kieContainer() {
 		return KieServices.Factory.get().getKieClasspathContainer();
 	}
-
 }

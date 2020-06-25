@@ -7,6 +7,7 @@ import {X500NameModel} from "../../shared/model/x500-name.model";
 import {EndUserCertificateModel} from "../../shared/model/end-user-certificate.model";
 import {IntermediateCertificateModel} from "../../shared/model/intermediate-certificate.model";
 
+
 @Component({
   selector: 'app-intermediate-certificate',
   templateUrl: './intermediate-certificate.component.html',

@@ -20,8 +20,6 @@ export class TemplateComponent implements OnInit {
     name: new FormControl(''),
     number: new FormControl(''),
     time: new FormControl(''),
-    os: new FormControl(''),
-    type: new FormControl(''),
     message: new FormControl(''),
     sendMessage: new FormControl(''),
   });
@@ -33,8 +31,6 @@ export class TemplateComponent implements OnInit {
       name: this.newRule.get('name').value,
       number: this.newRule.get('number').value,
       time: this.newRule.get('time').value,
-      os: this.newRule.get('os').value,
-      type: this.newRule.get('type').value,
       message: this.newRule.get('message').value,
       sendMessage: this.newRule.get('sendMessage').value
     };

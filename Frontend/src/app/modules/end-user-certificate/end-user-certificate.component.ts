@@ -41,7 +41,7 @@ export class EndUserCertificateComponent implements OnInit {
         this.router.navigate(['/dashboard/euc/preview']);
       },
       error: (err: any) => {
-        console.log(err);
+        console.log(err)
       }
     };
     const x500NameModel: X500NameModel = new X500NameModel(
