@@ -55,7 +55,7 @@ public class SiemAgentService {
                     System.out.println("\nTHREAD RUN\n");
                     runFileLogScan();
                     runWindowsLogScan();
-                    Thread.sleep(10000);
+                    Thread.sleep(3000);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
