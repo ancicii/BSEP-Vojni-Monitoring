@@ -4,6 +4,8 @@
     <button *ngIf="getRole == 'ROLE_ADMIN'" routerLink="/dashboard/all/preview" mat-button>All Certificates</button>
     <button *ngIf="getRole == 'ROLE_ADMIN'" routerLink="/dashboard/ic/preview" mat-button>Intermediate Certificates</button>
     <button *ngIf="getRole == 'ROLE_ADMIN'" routerLink="/dashboard/euc/preview" mat-button>End User Certificates</button>
+    <button *ngIf="getRole == 'ROLE_ADMIN'" routerLink="/dashboard/template" mat-button>Create Rule</button>
+    <button *ngIf="getRole == 'ROLE_ADMIN'" routerLink="/dashboard/alarms" mat-button>Alarms</button>
   </span>
   <span fxLayoutAlign="right">
     <button *ngIf="getRole != 'NO_ROLE'" (click)="logOut()" mat-button>Logout</button>

@@ -47,7 +47,7 @@ public class SiemCenterService {
         drl = drl.substring(drl.indexOf("rule"));
 
         try {
-            Files.write(Paths.get("src/main/resources/bsep.SIEMcenter.rules/alarm.drl"), drl.getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get("SIEM-center/src/main/resources/bsep.SIEMcenter.rules/alarm.drl"), drl.getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             return false;
         }

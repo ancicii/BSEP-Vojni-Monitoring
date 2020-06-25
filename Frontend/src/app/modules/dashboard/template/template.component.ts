@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
-import {ILogTemplate, SiemCenterService} from "../core/siem-center.service";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ILogTemplate, SiemCenterService} from "../../../core/siem-center.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-template',
@@ -13,15 +14,15 @@ export class TemplateComponent implements OnInit {
   osList: string[] = ['windows', 'linux'];
   types: string[] = ['warning', 'critical error', 'message'];
 
-  constructor(private siemCenterService: SiemCenterService) { }
+  constructor(private siemCenterService: SiemCenterService, private router: Router) { }
 
   ngOnInit(){
   this.newRule = new FormGroup({
-    name: new FormControl(''),
-    number: new FormControl(''),
-    time: new FormControl(''),
-    message: new FormControl(''),
-    sendMessage: new FormControl(''),
+    name: new FormControl('',[Validators.required]),
+    number: new FormControl('',[Validators.required]),
+    time: new FormControl('',[Validators.required]),
+    message: new FormControl('',[Validators.required]),
+    sendMessage: new FormControl('',[Validators.required]),
   });
   }
 
@@ -36,7 +37,7 @@ export class TemplateComponent implements OnInit {
     };
 
     this.siemCenterService.createTemplate(templateParams).subscribe((resData =>
-    console.log(resData)
+        this.router.navigate(['/dashboard/all/preview'])
     ));
 
   }

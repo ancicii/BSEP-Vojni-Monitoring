@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {DatePipe} from "@angular/common";
 import {CertificateApiService} from "../../../core/certificate-api.service";
 import {DataSource} from "@angular/cdk/collections";
 import {Observable} from "rxjs";
