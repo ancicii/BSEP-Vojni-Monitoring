@@ -25,5 +25,7 @@ public class Log {
     public String os;
     public String type;
     public String host;
+    public String machine;
+    public boolean pass = true;
 
 }

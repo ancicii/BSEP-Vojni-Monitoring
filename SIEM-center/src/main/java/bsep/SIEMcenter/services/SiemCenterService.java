@@ -59,7 +59,6 @@ public class SiemCenterService {
         try {
             if (kSession == null) {
                 kSession = kieContainer.newKieSession("ksession-rules");
-                List<String> list = new ArrayList<>();
                 kSession.setGlobal("logStorage", new LogStorage());
             }
             kSession.insert(log);

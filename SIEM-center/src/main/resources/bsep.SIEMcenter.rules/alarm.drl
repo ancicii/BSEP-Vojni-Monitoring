@@ -5,21 +5,27 @@ import bsep.SIEMcenter.model.LogStorage;
 
 global bsep.SIEMcenter.model.LogStorage logStorage;
 
-rule "nesto"
+rule "Login fail"
     when
+    $l1 : Log(
+        $machine: machine,
+        $type: type,
+        $os: os,
+        pass == true
+    )
     Number(intValue >= 2)
         from accumulate(
-            Log (
-                $this:this,
-                os == "windows",
-                type == "warning",
-                message == "poruka"
-            )
-            over window:time(5s),
-            count($this))
+            $l2: Log (
+                this != $l1,
+                os == $os,
+                type == $type,
+                machine == $machine,
+                message == "Unsuccessful login attempt",
+                this meets[5s] $l1,
+                pass == true
+            ),
+            count($l2))
 	then
-	    System.out.println("HEHE " + Log.class);
-		logStorage.addLog("message");
+	    modify($l1){ pass = false };
+		logStorage.addLog("Too many unsuccessful login attempts from " + $machine);
 end
-
-
